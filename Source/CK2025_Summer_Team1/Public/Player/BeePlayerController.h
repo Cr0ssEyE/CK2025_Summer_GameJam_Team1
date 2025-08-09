@@ -3,9 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputMappingContext.h"
+#include "InputActionValue.h"
 #include "GameFramework/PlayerController.h"
 #include "BeePlayerController.generated.h"
+
+class UInputAction;
+class UInputMappingContext;
 
 /**
  * 
@@ -18,20 +21,38 @@ class ABeePlayerController : public APlayerController
 public:
 	ABeePlayerController();
 	
-private:
 	void BeginPlay() override;
-	void SetupInputComponent() override;
 
+protected:
+	void SetupInputComponent() override;
+	void SelectHoldStarted(const FInputActionValue& InputActionValue);
+	void SelectHoldCompleted(const FInputActionValue& InputActionValue);
+	void SelectClickStarted(const FInputActionValue& InputActionValue);
+	void SelectClickCompleted(const FInputActionValue& InputActionValue);
+
+protected:
+	void PickupObjectMoveToMouseCursor();
+	
 	// 입력 설정
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Input", meta=(AllowPrivateAccess = "true"))
-	UInputMappingContext* DefaultMappingContext;
+	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Input", meta=(AllowPrivateAccess = "true"))
-	UInputAction* SelectClickAction;
+	TObjectPtr<UInputAction> MouseHoldAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Input", meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> MouseClickAction;
 
 	// 입력 처리 관련
 protected:
-	float ObjectSnapRange;
+	float ObjectPickUpHeight;
 	
+	float ObjectSnapRange;
+
+	uint32 bIsObjectPickup : 1;
+	
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TWeakObjectPtr<AActor> PickUpObject;
 };

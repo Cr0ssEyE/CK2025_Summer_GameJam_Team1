@@ -6,6 +6,10 @@
 #include "GameFramework/Pawn.h"
 #include "BeePlayerPawn.generated.h"
 
+class UFloatingPawnMovement;
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class CK2025_SUMMER_TEAM1_API ABeePlayerPawn : public APawn
 {
@@ -19,11 +23,15 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+protected:	
+	/** Camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* Camera;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* CameraArm;
 	
+	/** Movement Component */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	UFloatingPawnMovement* FloatingPawnMovement;
 };

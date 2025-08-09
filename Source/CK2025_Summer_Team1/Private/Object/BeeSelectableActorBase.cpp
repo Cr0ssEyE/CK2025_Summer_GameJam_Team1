@@ -3,6 +3,8 @@
 
 #include "Object/BeeSelectableActorBase.h"
 
+#include "Constant/BeeMaterialParamNames.h"
+
 
 // Sets default values
 ABeeSelectableActorBase::ABeeSelectableActorBase()
@@ -13,6 +15,7 @@ ABeeSelectableActorBase::ABeeSelectableActorBase()
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	RootComponent = MeshComponent;
 	OutlineMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OutlineComponent"));
+	OutlineMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	OutlineMeshComponent->SetupAttachment(RootComponent);
 
 	bIsSelected = false;
@@ -28,6 +31,7 @@ void ABeeSelectableActorBase::BeginPlay()
 	{
 		OutlineMaterialInstance = UMaterialInstanceDynamic::Create(OutlineMaterialInterface, this);
 		OutlineMeshComponent->SetMaterial(0, OutlineMaterialInstance);
+		OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_DENSITY, 0.f);
 	}
 	else
 	{
@@ -45,12 +49,37 @@ void ABeeSelectableActorBase::NotifyActorBeginCursorOver()
 {
 	Super::NotifyActorBeginCursorOver();
 	bIsHovered = true;
-	OutlineMaterialInstance->SetScalarParameterValue(TEXT("OutlineIntensity"), 1.f);
+	OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_DENSITY, 1.f);
 }
 
 void ABeeSelectableActorBase::NotifyActorEndCursorOver()
 {
 	Super::NotifyActorEndCursorOver();
 	bIsHovered = false;
-	OutlineMaterialInstance->SetScalarParameterValue(TEXT("OutlineIntensity"), 0.f);
+	OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_DENSITY, 0.f);
+}
+
+void ABeeSelectableActorBase::NotifyActorOnClicked(FKey ButtonPressed)
+{
+	Super::NotifyActorOnClicked(ButtonPressed);
+	if (!bIsSelected)
+	{
+		bIsSelected = true;
+	}
+	else
+	{
+		bIsSelected = false;
+	}
+	
+	OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_DENSITY, 0.f);
+}
+
+void ABeeSelectableActorBase::NotifyActorOnReleased(FKey ButtonReleased)
+{
+	Super::NotifyActorOnReleased(ButtonReleased);
+	if (bIsSelected)
+	{
+		bIsSelected = false;
+		OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_DENSITY, 0.f);
+	}
 }
