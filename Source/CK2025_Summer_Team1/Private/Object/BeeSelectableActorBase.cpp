@@ -31,7 +31,7 @@ void ABeeSelectableActorBase::BeginPlay()
 	{
 		OutlineMaterialInstance = UMaterialInstanceDynamic::Create(OutlineMaterialInterface, this);
 		OutlineMeshComponent->SetMaterial(0, OutlineMaterialInstance);
-		OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_DENSITY, 0.f);
+		OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_VISIBILITY, 0.f);
 	}
 	else
 	{
@@ -49,14 +49,14 @@ void ABeeSelectableActorBase::NotifyActorBeginCursorOver()
 {
 	Super::NotifyActorBeginCursorOver();
 	bIsHovered = true;
-	OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_DENSITY, 1.f);
+	OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_VISIBILITY, 1.f);
 }
 
 void ABeeSelectableActorBase::NotifyActorEndCursorOver()
 {
 	Super::NotifyActorEndCursorOver();
 	bIsHovered = false;
-	OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_DENSITY, 0.f);
+	OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_VISIBILITY, 0.f);
 }
 
 void ABeeSelectableActorBase::NotifyActorOnClicked(FKey ButtonPressed)
@@ -71,7 +71,7 @@ void ABeeSelectableActorBase::NotifyActorOnClicked(FKey ButtonPressed)
 		bIsSelected = false;
 	}
 	
-	OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_DENSITY, 0.f);
+	OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_VISIBILITY, 0.f);
 }
 
 void ABeeSelectableActorBase::NotifyActorOnReleased(FKey ButtonReleased)
@@ -80,6 +80,6 @@ void ABeeSelectableActorBase::NotifyActorOnReleased(FKey ButtonReleased)
 	if (bIsSelected)
 	{
 		bIsSelected = false;
-		OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_DENSITY, 0.f);
+		OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_VISIBILITY, 0.f);
 	}
 }

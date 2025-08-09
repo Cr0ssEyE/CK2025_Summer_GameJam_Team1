@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputActionValue.h"
 #include "GameFramework/PlayerController.h"
 #include "BeePlayerController.generated.h"
 
+class ABeeBuildingMaterialBase;
+struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
 
@@ -54,5 +55,5 @@ protected:
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TWeakObjectPtr<AActor> PickUpObject;
+	TWeakObjectPtr<ABeeBuildingMaterialBase> PickUpObject;
 };

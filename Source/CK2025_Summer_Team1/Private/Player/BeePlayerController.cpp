@@ -8,6 +8,7 @@
 #include "Constant/BeeAssetLocations.h"
 #include "Constant/BeeCollisionNames.h"
 #include "Data/BeePlayerDataAsset.h"
+#include "Object/BeeBuildingMaterialBase.h"
 #include "Util/BeeConstructorHelper.h"
 
 ABeePlayerController::ABeePlayerController()
@@ -68,7 +69,7 @@ void ABeePlayerController::SelectHoldCompleted(const FInputActionValue& InputAct
 	if (PickUpObject.IsValid())
 	{
 		bIsObjectPickup = false;
-		PickUpObject->SetActorLocation(PickUpObject->GetActorLocation() - FVector(0.f, 0.f, ObjectPickUpHeight / 2));
+		PickUpObject.Get()->SetActorLocation(PickUpObject->GetActorLocation() - FVector(0.f, 0.f, ObjectPickUpHeight / 2));
 		PickUpObject.Reset();
 	}
 }
@@ -83,7 +84,7 @@ void ABeePlayerController::SelectClickStarted(const FInputActionValue& InputActi
 	FHitResult Hit;
 	GetHitResultUnderCursor(ECC_TRACE_PUZZLE_OBJECT, false, Hit);
 	
-	if (AActor* PuzzleActor = Hit.GetActor())
+	if (ABeeBuildingMaterialBase* PuzzleActor = Cast<ABeeBuildingMaterialBase>(Hit.GetActor()))
 	{
 		PickUpObject = PuzzleActor;
 		UE_LOG(LogTemp, Log, TEXT("Clicked on: %s"), *Hit.GetActor()->GetName());
@@ -105,7 +106,7 @@ void ABeePlayerController::PickupObjectMoveToMouseCursor()
 		if (GetHitResultUnderCursor(ECC_TRACE_PLACE_OBJECT, false, Hit))
 		{
 			FVector TargetLocation = Hit.ImpactPoint;
-			PickUpObject->SetActorLocation(TargetLocation + FVector(0.f, 0.f, ObjectPickUpHeight));
+			PickUpObject.Get()->SetActorLocation(TargetLocation + FVector(0.f, 0.f, ObjectPickUpHeight));
 		}
 		GetWorldTimerManager().SetTimerForNextTick(this, &ABeePlayerController::PickupObjectMoveToMouseCursor);
 	}
