@@ -43,7 +43,6 @@ void ABeeBuildingMaterialPollen::NotifyActorOnReleased(FKey ButtonReleased)
 	if (!IsValid(HitResult.GetActor()))
 	{
 		GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>()->OnPickUpObjectReleased.Broadcast();
-		ReturnSpawnedPoint();
 		return;
 	}
 	
@@ -60,8 +59,8 @@ void ABeeBuildingMaterialPollen::NotifyActorOnReleased(FKey ButtonReleased)
 		{
 			GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>()->ChangeBuildingMaterialColor(BeeswaxObject, MixedColor);
 			RootComponent->SetVisibility(false);
-			ReturnSpawnedPoint();
 		}
+		ReturnSpawnedPoint();
 	}
 }
 

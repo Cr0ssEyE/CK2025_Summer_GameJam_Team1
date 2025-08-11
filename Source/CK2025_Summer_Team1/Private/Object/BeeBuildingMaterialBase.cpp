@@ -35,11 +35,27 @@ void ABeeBuildingMaterialBase::SetBuildingMaterialColor(const EBuildingMaterialB
 void ABeeBuildingMaterialBase::NotifyActorOnClicked(FKey ButtonPressed)
 {
 	Super::NotifyActorOnClicked(ButtonPressed);
+	if (bIsSelected)
+	{
+		OnBuildingMaterialReleased.Broadcast();
+	}
+	else
+	{
+		OnBuildingMaterialPicked.Broadcast();
+	}
 }
 
 void ABeeBuildingMaterialBase::NotifyActorOnReleased(FKey ButtonReleased)
 {
 	Super::NotifyActorOnReleased(ButtonReleased);
+	if (bIsSelected)
+	{
+		OnBuildingMaterialReleased.Broadcast();
+	}
+	else
+	{
+		OnBuildingMaterialPicked.Broadcast();
+	}
 }
 
 void ABeeBuildingMaterialBase::ReturnSpawnedPoint()

@@ -6,6 +6,8 @@
 #include "BeeBuildingMaterialBase.h"
 #include "BeeBuildingMaterialBeeswax.generated.h"
 
+class UBeePuzzlePieceComponent;
+
 UCLASS()
 class CK2025_SUMMER_TEAM1_API ABeeBuildingMaterialBeeswax : public ABeeBuildingMaterialBase
 {
@@ -18,4 +20,18 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void NotifyActorOnClicked(FKey ButtonPressed = EKeys::LeftMouseButton) override;
+	virtual void NotifyActorOnReleased(FKey ButtonReleased = EKeys::LeftMouseButton) override;
+
+protected:
+	void CheckPuzzlePieceCanSnapToPlace();
+	void TrySnapPuzzlePieceToPlace();
+	
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	TArray<UBeePuzzlePieceComponent*> PuzzlePieces;
+
+	uint32 PuzzleMatchingCount;
+
+	uint32 bIsOnPuzzlePlace : 1;
 };

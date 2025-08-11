@@ -28,13 +28,13 @@ protected:
 	virtual void NotifyActorEndCursorOver() override;
 	virtual void NotifyActorOnClicked(FKey ButtonPressed = EKeys::LeftMouseButton) override;
 	virtual void NotifyActorOnReleased(FKey ButtonReleased = EKeys::LeftMouseButton) override;
-	
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UStaticMeshComponent* MeshComponent;
+	TObjectPtr<UStaticMeshComponent> MeshComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UStaticMeshComponent* OutlineMeshComponent;
+	TObjectPtr<UStaticMeshComponent> OutlineMeshComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstanceDynamic> OutlineMaterialInstance;
