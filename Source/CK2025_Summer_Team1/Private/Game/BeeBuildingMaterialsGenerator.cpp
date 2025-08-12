@@ -35,6 +35,12 @@ void ABeeBuildingMaterialsGenerator::BeginPlay()
 	{
 		ensureMsgf(false, TEXT("Puzzle piece spawn point not found"));
 	}
+
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateWeakLambda(this, [&, this]()
+	{
+		GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>()->OnFadeStateChanged.Broadcast(true);
+	}), 5.f, false);
 }
 
 void ABeeBuildingMaterialsGenerator::OnFadeStateChanged(bool bIsFadingIn)
@@ -48,18 +54,22 @@ void ABeeBuildingMaterialsGenerator::OnFadeStateChanged(bool bIsFadingIn)
 	{
 		for (int32 i = 0; i < PuzzlePieceData.PuzzlePieceCount; ++i)
 		{
-			if (PuzzlePieceSpawnPoints.IsValidIndex(i))
+			if (PuzzlePieceSpawnPoints.IsEmpty())
 			{
-				UBeePuzzlePieceSpawnPoint* SpawnPoint = PuzzlePieceSpawnPoints[FMath::RandRange(0, PuzzlePieceSpawnPoints.Num())];
-				if (SpawnPoint)
-				{
-					GetWorld()->SpawnActor<AActor>(PuzzlePieceData.PuzzlePieceBlueprint, SpawnPoint->GetComponentLocation(), FRotator::ZeroRotator);
-					PuzzlePieceSpawnPoints.Remove(SpawnPoint);
-				}
-				else
-				{
-					i--;
-				}
+				break;
+			}
+
+			int32 RandomIndex = FMath::RandRange(0, PuzzlePieceSpawnPoints.Num() - 1 <= 0 ? 1 : PuzzlePieceSpawnPoints.Num() - 1);
+			RandomIndex = RandomIndex >= PuzzlePieceSpawnPoints.Num() ? PuzzlePieceSpawnPoints.Num() - 1 : RandomIndex;
+			UBeePuzzlePieceSpawnPoint* SpawnPoint = PuzzlePieceSpawnPoints[RandomIndex];
+			if (SpawnPoint)
+			{
+				GetWorld()->SpawnActor<AActor>(PuzzlePieceData.PuzzlePieceBlueprint, SpawnPoint->GetComponentLocation(), FRotator::ZeroRotator);
+				PuzzlePieceSpawnPoints.Remove(SpawnPoint);
+			}
+			else
+			{
+				i--;
 			}
 		}
 	}

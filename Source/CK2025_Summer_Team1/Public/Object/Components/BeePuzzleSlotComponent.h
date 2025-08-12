@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SceneComponent.h"
+#include "Components/BillboardComponent.h"
 #include "Enumerations/BeeColorEnumerations.h"
 #include "BeePuzzleSlotComponent.generated.h"
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class CK2025_SUMMER_TEAM1_API UBeePuzzleSlotComponent : public USceneComponent
+class CK2025_SUMMER_TEAM1_API UBeePuzzleSlotComponent : public UBillboardComponent
 {
 	GENERATED_BODY()
 

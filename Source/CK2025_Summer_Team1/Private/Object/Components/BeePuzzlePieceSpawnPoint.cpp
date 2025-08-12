@@ -16,6 +16,5 @@ void UBeePuzzlePieceSpawnPoint::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
 }
 

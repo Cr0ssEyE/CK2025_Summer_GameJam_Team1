@@ -10,7 +10,15 @@ USTRUCT(BlueprintType)
 struct FBeePuzzlePieceData
 {
 	GENERATED_BODY()
-
+	
+public:
+	FBeePuzzlePieceData() 
+		: PuzzlePieceBlueprint(nullptr)
+		, PuzzlePieceCount(0)
+	{
+		
+	}
+	
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Puzzle Piece", DisplayName = "퍼즐 조각 블루프린트")
 	TSubclassOf<AActor> PuzzlePieceBlueprint;
