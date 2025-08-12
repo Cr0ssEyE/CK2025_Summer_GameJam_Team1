@@ -5,16 +5,16 @@
 #include "CoreMinimal.h"
 #include "Components/BeePuzzleSlotComponent.h"
 #include "GameFramework/Actor.h"
-#include "BeeBuildingPlace.generated.h"
+#include "BeeBuildingSlot.generated.h"
 
 UCLASS()
-class CK2025_SUMMER_TEAM1_API ABeeBuildingPlace : public AActor
+class CK2025_SUMMER_TEAM1_API ABeeBuildingSlot : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ABeeBuildingPlace();
+	ABeeBuildingSlot();
 
 public:
 	FORCEINLINE USceneComponent* GetPuzzleSlotComponent() const { return Cast<USceneComponent>(PuzzleSlotComponent); }

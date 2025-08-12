@@ -4,7 +4,7 @@
 #include "Object/BeeBuildingMaterialBeeswax.h"
 
 #include "Constant/BeeCollisionNames.h"
-#include "Object/BeeBuildingPlace.h"
+#include "Object/BeeBuildingSlot.h"
 #include "Object/Components/BeePuzzlePieceComponent.h"
 
 // Sets default values
@@ -83,15 +83,15 @@ void ABeeBuildingMaterialBeeswax::TrySnapPuzzlePieceToPlace()
 		return;
 	}
 	
-	int32 CurrentPuzzleMatchingCount = PuzzleMatchingCount;
+	const int32 CurrentPuzzleMatchingCount = PuzzleMatchingCount;
 	FHitResult HitResult;
 
 	UBeePuzzlePieceComponent* TestPuzzlePiece = PuzzlePieces[0];
 	
-	FVector Start = TestPuzzlePiece->GetComponentLocation();
-	FVector End = Start - FVector(0.f, 0.f, 1000.f);
+	const FVector Start = TestPuzzlePiece->GetComponentLocation();
+	const FVector End = Start - FVector(0.f, 0.f, 1000.f);
 
-	bool bHit = GetWorld()->LineTraceSingleByChannel(
+	const bool bHit = GetWorld()->LineTraceSingleByChannel(
 		HitResult,
 		Start,
 		End,
@@ -106,15 +106,16 @@ void ABeeBuildingMaterialBeeswax::TrySnapPuzzlePieceToPlace()
 		return;
 	}
 	
-	ABeeBuildingPlace* TestPlace = Cast<ABeeBuildingPlace>(HitResult.GetActor());
-	if (!TestPlace)
+	ABeeBuildingSlot* BuildingSlot = Cast<ABeeBuildingSlot>(HitResult.GetActor());
+	if (!BuildingSlot)
 	{
 		ensure(false);
 		return;
 	}
 	
-	USceneComponent* TestSlot = TestPlace->GetPuzzleSlotComponent();
-	FVector Distance = TestSlot->GetComponentLocation() - TestPuzzlePiece->GetComponentLocation();
+	const USceneComponent* TestSlotComponent = BuildingSlot->GetPuzzleSlotComponent();
+	//TODO: 위치 조정 개선 필요
+	const FVector Distance = TestSlotComponent->GetComponentLocation() - TestPuzzlePiece->GetComponentLocation();
 	SetActorLocation(GetActorLocation() + Distance);
 	SetLastPlacedPoint();
 	bIsOnPuzzlePlace = true;

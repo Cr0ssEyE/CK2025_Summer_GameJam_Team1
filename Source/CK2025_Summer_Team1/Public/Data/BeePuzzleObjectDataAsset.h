@@ -16,7 +16,7 @@ class CK2025_SUMMER_TEAM1_API UBeePuzzleObjectDataAsset : public UDataAsset
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh", DisplayName = "스태틱 메시")
-	TObjectPtr<UStaticMesh> ObjectMesh;
+	const TObjectPtr<UStaticMesh> ObjectMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Color", DisplayName = "기본 색상 1")
 	FColor BaseFirstColor;

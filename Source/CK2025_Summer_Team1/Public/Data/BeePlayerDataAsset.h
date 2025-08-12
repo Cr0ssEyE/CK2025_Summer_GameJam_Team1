@@ -19,13 +19,13 @@ class CK2025_SUMMER_TEAM1_API UBeePlayerDataAsset : public UDataAsset
 	// 입력
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Input", DisplayName = "IMC")
-	TObjectPtr<UInputMappingContext> PlayerInputMappingContext;
+	const TObjectPtr<UInputMappingContext> PlayerInputMappingContext;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input", DisplayName = "마우스 홀드 액션")
-	TObjectPtr<UInputAction> PlayerMouseHoldAction;
+	const TObjectPtr<UInputAction> PlayerMouseHoldAction;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input", DisplayName = "마우스 클릭 액션")
-	TObjectPtr<UInputAction> PlayerMouseClickAction;
+	const TObjectPtr<UInputAction> PlayerMouseClickAction;
 
 	// 카메라
 public:
