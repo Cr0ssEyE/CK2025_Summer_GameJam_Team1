@@ -4,8 +4,11 @@
 #include "Game/BeePuzzleManageSubsystem.h"
 
 #include "Constant/BeeAssetLocations.h"
+#include "Constant/BeeCollisionNames.h"
 #include "Data/BeePuzzleObjectDataAsset.h"
 #include "Object/BeeBuildingMaterialBase.h"
+#include "Object/BeeBuildingMaterialBeeswax.h"
+#include "Object/BeeBuildingSlot.h"
 #include "Util/BeeConstructorHelper.h"
 
 UBeePuzzleManageSubsystem::UBeePuzzleManageSubsystem()
@@ -16,6 +19,7 @@ UBeePuzzleManageSubsystem::UBeePuzzleManageSubsystem()
 void UBeePuzzleManageSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+	OnBeeswaxPlacedOnBoard.AddDynamic(this, &UBeePuzzleManageSubsystem::CheckPuzzleColorIsMatching);
 }
 
 void UBeePuzzleManageSubsystem::Deinitialize()
@@ -76,4 +80,50 @@ void UBeePuzzleManageSubsystem::ChangeBuildingMaterialColor(ABeeBuildingMaterial
 		break;
 	}
 	BuildingMaterial->SetBuildingMaterialColor(NewColor, NewMaterialColor);
+}
+
+void UBeePuzzleManageSubsystem::CheckPuzzleColorIsMatching()
+{
+	for (const auto PuzzleSlot : PuzzleSlots)
+	{
+		if (!IsValid(PuzzleSlot))
+		{
+			continue;
+		}
+
+		FHitResult HitResult;
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.AddIgnoredActor(PuzzleSlot);
+
+		const FVector StartLocation = PuzzleSlot->GetPuzzleCenterLocation();
+		
+		GetWorld()->SweepSingleByChannel(
+			HitResult,
+			StartLocation,
+			StartLocation,
+			FQuat::Identity,
+			ECC_TRACE_PUZZLE_OBJECT,
+			FCollisionShape::MakeSphere(10.f),
+			CollisionParams
+		);
+
+		if (!IsValid(HitResult.GetActor()))
+		{
+			return;
+		}
+
+		const ABeeBuildingMaterialBeeswax* BeeswaxObject = Cast<ABeeBuildingMaterialBeeswax>(HitResult.GetActor());
+		if (!IsValid(BeeswaxObject))
+		{
+			return;
+		}
+
+		if (BeeswaxObject->GetBuildingMaterialColor() != PuzzleSlot->GetRequiredPieceColor())
+		{
+			return;
+		}
+	}
+
+	//TODO: 클리어 관련 처리 필요
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("All puzzle pieces are matched!"), false, FVector2D(3.f, 3.f));
 }

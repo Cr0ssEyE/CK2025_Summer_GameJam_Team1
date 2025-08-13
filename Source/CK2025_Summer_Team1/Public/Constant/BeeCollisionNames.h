@@ -6,5 +6,7 @@
 #define ECC_PLACE_OBJECT ECC_GameTraceChannel2
 #define ECC_TRACE_PUZZLE_OBJECT ECC_GameTraceChannel11
 #define ECC_TRACE_PLACE_OBJECT ECC_GameTraceChannel12
+#define ECC_TRACE_PUZZLE_SLOT_OBJECT ECC_GameTraceChannel13
 
 #define CP_PUZZLE_OBJECT TEXT("Puzzle")
+#define CP_PLACE_OBJECT TEXT("Place")

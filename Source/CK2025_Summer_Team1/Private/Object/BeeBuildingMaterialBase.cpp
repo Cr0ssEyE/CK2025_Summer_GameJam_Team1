@@ -6,10 +6,11 @@
 #include "Constant/BeeCollisionNames.h"
 #include "Constant/BeeMaterialParamNames.h"
 
-ABeeBuildingMaterialBase::ABeeBuildingMaterialBase() : SpawnedPoint(FVector::ZeroVector)
+ABeeBuildingMaterialBase::ABeeBuildingMaterialBase() :
+SpawnedPoint(FVector::ZeroVector),
+LastPlacedPoint(FVector::ZeroVector)
 {
 	MeshComponent->SetCollisionProfileName(CP_PUZZLE_OBJECT);
-	
 }
 
 void ABeeBuildingMaterialBase::BeginPlay()
@@ -35,11 +36,27 @@ void ABeeBuildingMaterialBase::SetBuildingMaterialColor(const EBuildingMaterialB
 void ABeeBuildingMaterialBase::NotifyActorOnClicked(FKey ButtonPressed)
 {
 	Super::NotifyActorOnClicked(ButtonPressed);
+	if (bIsSelected)
+	{
+		OnBuildingMaterialReleased.Broadcast();
+	}
+	else
+	{
+		OnBuildingMaterialPicked.Broadcast();
+	}
 }
 
 void ABeeBuildingMaterialBase::NotifyActorOnReleased(FKey ButtonReleased)
 {
 	Super::NotifyActorOnReleased(ButtonReleased);
+	if (bIsSelected)
+	{
+		OnBuildingMaterialReleased.Broadcast();
+	}
+	else
+	{
+		OnBuildingMaterialPicked.Broadcast();
+	}
 }
 
 void ABeeBuildingMaterialBase::ReturnSpawnedPoint()

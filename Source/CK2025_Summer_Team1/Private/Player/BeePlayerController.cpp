@@ -87,6 +87,7 @@ void ABeePlayerController::SelectClickStarted(const FInputActionValue& InputActi
 	if (ABeeBuildingMaterialBase* PuzzleActor = Cast<ABeeBuildingMaterialBase>(Hit.GetActor()))
 	{
 		PickUpObject = PuzzleActor;
+		PickUpObject.Get()->SetLastPlacedPoint();
 		UE_LOG(LogTemp, Log, TEXT("Clicked on: %s"), *Hit.GetActor()->GetName());
 		bIsObjectPickup = true;
 		GetWorldTimerManager().SetTimerForNextTick(this, &ABeePlayerController::PickupObjectMoveToMouseCursor);

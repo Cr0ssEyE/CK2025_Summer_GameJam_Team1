@@ -7,6 +7,8 @@
 #include "Object/BeeSelectableActorBase.h"
 #include "BeeBuildingMaterialBase.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBuildingMaterialPickEvent);
+
 /**
  * 
  */
@@ -18,11 +20,15 @@ class CK2025_SUMMER_TEAM1_API ABeeBuildingMaterialBase : public ABeeSelectableAc
 public:
 	ABeeBuildingMaterialBase();
 
+	FOnBuildingMaterialPickEvent OnBuildingMaterialPicked;
+	FOnBuildingMaterialPickEvent OnBuildingMaterialReleased;
+	
 public:
 	virtual void BeginPlay() override;
 
 public:
 	FORCEINLINE EBuildingMaterialBaseColor GetBuildingMaterialColor() const { return BuildingMaterialColor; }
+	FORCEINLINE void SetLastPlacedPoint() { LastPlacedPoint = GetActorLocation(); }
 	void SetBuildingMaterialColor(const EBuildingMaterialBaseColor NewColorEnum, FColor NewColor);
 	
 protected:
@@ -37,4 +43,5 @@ protected:
 	EBuildingMaterialBaseColor BuildingMaterialColor = EBuildingMaterialBaseColor::None;
 	
 	FVector SpawnedPoint;
+	FVector LastPlacedPoint;
 };
