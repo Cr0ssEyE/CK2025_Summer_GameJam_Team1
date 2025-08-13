@@ -22,10 +22,10 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void NotifyActorOnClicked(FKey ButtonPressed = EKeys::LeftMouseButton) override;
 	virtual void NotifyActorOnReleased(FKey ButtonReleased = EKeys::LeftMouseButton) override;
-
+	
 protected:
 	void CheckPuzzlePieceCanSnapToPlace();
-	void TrySnapPuzzlePieceToPlace();
+	bool TrySnapPuzzlePieceToPlace();
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)

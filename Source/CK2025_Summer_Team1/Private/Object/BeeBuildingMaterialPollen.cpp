@@ -33,34 +33,46 @@ void ABeeBuildingMaterialPollen::NotifyActorOnReleased(FKey ButtonReleased)
 	Super::NotifyActorOnReleased(ButtonReleased);
 
 	FHitResult HitResult;
-	GetWorld()->LineTraceSingleByChannel(
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+	
+	GetWorld()->SweepSingleByChannel(
 		HitResult,
 		GetActorLocation(),
-		GetActorLocation() + FVector(0, 0, -1000),
-		ECC_TRACE_PUZZLE_OBJECT
-	);
+		GetActorLocation() + FVector(0.f, 0.f, -1000.f),
+		FQuat::Identity,
+		ECC_TRACE_PUZZLE_OBJECT,
+		FCollisionShape::MakeSphere(100.f),
+		CollisionParams
+		);
 
 	if (!IsValid(HitResult.GetActor()))
 	{
-		GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>()->OnPickUpObjectReleased.Broadcast();
 		return;
 	}
 	
 	if (ABeeBuildingMaterialPollen* PollenObject = Cast<ABeeBuildingMaterialPollen>(HitResult.GetActor()))
 	{
+		TryMixingColor(PollenObject);
 		return;
 	}
 
 	if (ABeeBuildingMaterialBeeswax* BeeswaxObject = Cast<ABeeBuildingMaterialBeeswax>(HitResult.GetActor()))
 	{
-		EBuildingMaterialBaseColor MixedColor = EBuildingMaterialBaseColor::None;
-		bool IsCanMixingColor = FBeeColorEnumHelper::FindMixedColor(BuildingMaterialColor, BeeswaxObject->GetBuildingMaterialColor(), MixedColor);
-		if (IsCanMixingColor)
-		{
-			GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>()->ChangeBuildingMaterialColor(BeeswaxObject, MixedColor);
-			RootComponent->SetVisibility(false);
-		}
-		ReturnSpawnedPoint();
+		TryMixingColor(BeeswaxObject);
 	}
+}
+
+void ABeeBuildingMaterialPollen::TryMixingColor(ABeeBuildingMaterialBase* OtherBuildingMaterial)
+{
+	EBuildingMaterialBaseColor MixedColor = EBuildingMaterialBaseColor::None;
+	bool IsCanMixingColor = FBeeColorEnumHelper::FindMixedColor(BuildingMaterialColor, OtherBuildingMaterial->GetBuildingMaterialColor(), MixedColor);
+	if (IsCanMixingColor)
+	{
+		GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>()->ChangeBuildingMaterialColor(OtherBuildingMaterial, MixedColor);
+		SetActorHiddenInGame(true);
+		SetActorEnableCollision(false);
+	}
+	SetActorLocation(LastPlacedPoint);
 }
 

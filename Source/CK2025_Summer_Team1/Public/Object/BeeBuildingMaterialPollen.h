@@ -23,4 +23,6 @@ protected:
 	virtual void NotifyActorOnClicked(FKey ButtonPressed = EKeys::LeftMouseButton) override;
 	virtual void NotifyActorOnReleased(FKey ButtonReleased = EKeys::LeftMouseButton) override;
 
+protected:
+	virtual void TryMixingColor(ABeeBuildingMaterialBase* OtherBuildingMaterial);
 };

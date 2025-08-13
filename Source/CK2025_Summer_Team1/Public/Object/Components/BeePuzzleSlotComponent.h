@@ -21,6 +21,6 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Puzzle Slot", DisplayName = "퍼즐 조각 요구 색상")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle Slot", DisplayName = "퍼즐 조각 요구 색상")
 	EBuildingMaterialBaseColor RequiredPuzzlePieceColor;
 };

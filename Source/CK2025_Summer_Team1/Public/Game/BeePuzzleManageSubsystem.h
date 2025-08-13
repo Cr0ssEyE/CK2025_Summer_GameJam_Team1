@@ -10,7 +10,7 @@
 class ABeeBuildingMaterialBase;
 class UBeePuzzleObjectDataAsset;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPickUpObjectReleased);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBeeswaxPlacedOnBoard);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFadeStateChanged, const bool, bIsFadeIn);
 
 /**
@@ -31,7 +31,7 @@ public:
 	virtual void ChangeBuildingMaterialColor(ABeeBuildingMaterialBase* BuildingMaterial, const EBuildingMaterialBaseColor NewColor);
 
 public:
-	FOnPickUpObjectReleased OnPickUpObjectReleased;
+	FOnBeeswaxPlacedOnBoard OnBeeswaxPlacedOnBoard;
 	FOnFadeStateChanged OnFadeStateChanged;
 	
 protected:

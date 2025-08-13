@@ -4,6 +4,7 @@
 #include "Object/BeeBuildingMaterialBeeswax.h"
 
 #include "Constant/BeeCollisionNames.h"
+#include "Game/BeePuzzleManageSubsystem.h"
 #include "Object/BeeBuildingSlot.h"
 #include "Object/Components/BeePuzzlePieceComponent.h"
 
@@ -20,7 +21,7 @@ bIsOnPuzzlePlace(0)
 void ABeeBuildingMaterialBeeswax::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	TArray<UActorComponent*> PieceComponents = K2_GetComponentsByClass(UBeePuzzlePieceComponent::StaticClass());
 	for (UActorComponent* Component : PieceComponents)
 	{
@@ -41,19 +42,27 @@ void ABeeBuildingMaterialBeeswax::NotifyActorOnClicked(FKey ButtonPressed)
 void ABeeBuildingMaterialBeeswax::NotifyActorOnReleased(FKey ButtonReleased)
 {
 	Super::NotifyActorOnReleased(ButtonReleased);
-	TrySnapPuzzlePieceToPlace();
+	if (!TrySnapPuzzlePieceToPlace() && PuzzleMatchingCount > 0)
+	{
+		SetActorLocation(LastPlacedPoint);
+	}
 }
 
 void ABeeBuildingMaterialBeeswax::CheckPuzzlePieceCanSnapToPlace()
 {
 	if (!bIsSelected && !bIsOnPuzzlePlace)
 	{
-		TrySnapPuzzlePieceToPlace();
+		if (!TrySnapPuzzlePieceToPlace() && PuzzleMatchingCount > 0)
+		{
+			SetActorLocation(LastPlacedPoint);
+		}
 		return;
 	}
 
 	PuzzleMatchingCount = 0;
 	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
 	
 	for (const UBeePuzzlePieceComponent* PuzzlePiece : PuzzlePieces)
 	{
@@ -64,7 +73,8 @@ void ABeeBuildingMaterialBeeswax::CheckPuzzlePieceCanSnapToPlace()
 			HitResult,
 			Start,
 			End,
-			ECC_TRACE_PUZZLE_SLOT_OBJECT
+			ECC_TRACE_PUZZLE_SLOT_OBJECT,
+			CollisionParams
 		);
 		DrawDebugLine(GetWorld(), Start, End, bHit ? FColor::Green : FColor::Red, false, 0.1f, 0, 1.0f);
 		if (bHit)
@@ -76,16 +86,17 @@ void ABeeBuildingMaterialBeeswax::CheckPuzzlePieceCanSnapToPlace()
 	GetWorldTimerManager().SetTimerForNextTick(this, &ABeeBuildingMaterialBeeswax::CheckPuzzlePieceCanSnapToPlace);
 }
 
-void ABeeBuildingMaterialBeeswax::TrySnapPuzzlePieceToPlace()
+bool ABeeBuildingMaterialBeeswax::TrySnapPuzzlePieceToPlace()
 {
 	if (PuzzlePieces.Num() == 0 || PuzzleMatchingCount == 0)
 	{
-		return;
+		return false;
 	}
 	
 	const int32 CurrentPuzzleMatchingCount = PuzzleMatchingCount;
 	FHitResult HitResult;
-
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
 	UBeePuzzlePieceComponent* TestPuzzlePiece = PuzzlePieces[0];
 	
 	const FVector Start = TestPuzzlePiece->GetComponentLocation();
@@ -95,7 +106,8 @@ void ABeeBuildingMaterialBeeswax::TrySnapPuzzlePieceToPlace()
 		HitResult,
 		Start,
 		End,
-		ECC_TRACE_PUZZLE_SLOT_OBJECT
+		ECC_TRACE_PUZZLE_SLOT_OBJECT,
+		CollisionParams
 	);
 	
 	if (!bHit || CurrentPuzzleMatchingCount < PuzzlePieces.Num())
@@ -103,14 +115,14 @@ void ABeeBuildingMaterialBeeswax::TrySnapPuzzlePieceToPlace()
 		bIsOnPuzzlePlace = false;
 		PuzzleMatchingCount = 0;
 		SetActorLocation(LastPlacedPoint);
-		return;
+		return false;
 	}
 	
 	ABeeBuildingSlot* BuildingSlot = Cast<ABeeBuildingSlot>(HitResult.GetActor());
 	if (!BuildingSlot)
 	{
 		ensure(false);
-		return;
+		return false;
 	}
 	
 	const USceneComponent* TestSlotComponent = BuildingSlot->GetPuzzleSlotComponent();
@@ -118,6 +130,9 @@ void ABeeBuildingMaterialBeeswax::TrySnapPuzzlePieceToPlace()
 	const FVector Distance = TestSlotComponent->GetComponentLocation() - TestPuzzlePiece->GetComponentLocation();
 	SetActorLocation(GetActorLocation() + Distance);
 	SetLastPlacedPoint();
+
+	GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>()->OnBeeswaxPlacedOnBoard.Broadcast();
 	bIsOnPuzzlePlace = true;
+	return true;
 }
 

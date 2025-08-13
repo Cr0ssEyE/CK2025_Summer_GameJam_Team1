@@ -39,15 +39,14 @@ void ABeeSelectableActorBase::BeginPlay()
 	}
 }
 
-// Called every frame
-void ABeeSelectableActorBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 void ABeeSelectableActorBase::NotifyActorBeginCursorOver()
 {
 	Super::NotifyActorBeginCursorOver();
+	if (IsHidden())
+	{
+		return;
+	}
+	
 	bIsHovered = true;
 	OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_VISIBILITY, 1.f);
 }
@@ -55,6 +54,11 @@ void ABeeSelectableActorBase::NotifyActorBeginCursorOver()
 void ABeeSelectableActorBase::NotifyActorEndCursorOver()
 {
 	Super::NotifyActorEndCursorOver();
+	if (IsHidden())
+	{
+		return;
+	}
+	
 	bIsHovered = false;
 	OutlineMaterialInstance->SetScalarParameterValue(PARAM_OUTLINE_VISIBILITY, 0.f);
 }
@@ -62,6 +66,11 @@ void ABeeSelectableActorBase::NotifyActorEndCursorOver()
 void ABeeSelectableActorBase::NotifyActorOnClicked(FKey ButtonPressed)
 {
 	Super::NotifyActorOnClicked(ButtonPressed);
+	if (IsHidden())
+	{
+		return;
+	}
+	
 	if (!bIsSelected)
 	{
 		bIsSelected = true;
@@ -77,6 +86,11 @@ void ABeeSelectableActorBase::NotifyActorOnClicked(FKey ButtonPressed)
 void ABeeSelectableActorBase::NotifyActorOnReleased(FKey ButtonReleased)
 {
 	Super::NotifyActorOnReleased(ButtonReleased);
+	if (IsHidden())
+	{
+		return;
+	}
+	
 	if (bIsSelected)
 	{
 		bIsSelected = false;
