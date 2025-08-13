@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/BeePuzzleSlotComponent.h"
+#include "Components/BillboardComponent.h"
+#include "Enumerations/BeeColorEnumerations.h"
 #include "GameFramework/Actor.h"
 #include "BeeBuildingSlot.generated.h"
 
@@ -17,7 +18,8 @@ public:
 	ABeeBuildingSlot();
 
 public:
-	FORCEINLINE USceneComponent* GetPuzzleSlotComponent() const { return Cast<USceneComponent>(PuzzleSlotComponent); }
+	FORCEINLINE FVector GetPuzzleCenterLocation() const { return PuzzleCenterComponent->GetComponentLocation(); }
+	FORCEINLINE EBuildingMaterialBaseColor GetRequiredPieceColor() const { return RequiredPuzzlePieceColor; }
 	
 protected:
 	// Called when the game starts or when spawned
@@ -28,5 +30,8 @@ protected:
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TObjectPtr<UBeePuzzleSlotComponent> PuzzleSlotComponent;
+	TObjectPtr<UBillboardComponent> PuzzleCenterComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle Slot", DisplayName = "퍼즐 조각 요구 색상")
+	EBuildingMaterialBaseColor RequiredPuzzlePieceColor;
 };

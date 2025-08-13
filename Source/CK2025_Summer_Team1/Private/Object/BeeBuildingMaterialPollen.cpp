@@ -70,6 +70,14 @@ void ABeeBuildingMaterialPollen::TryMixingColor(ABeeBuildingMaterialBase* OtherB
 	if (IsCanMixingColor)
 	{
 		GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>()->ChangeBuildingMaterialColor(OtherBuildingMaterial, MixedColor);
+		if (auto Beeswax = Cast<ABeeBuildingMaterialBeeswax>(OtherBuildingMaterial))
+		{
+			if (Beeswax->IsOnPuzzlePlace())
+			{
+				GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>()->OnBeeswaxPlacedOnBoard.Broadcast();
+			}
+		}
+		
 		SetActorHiddenInGame(true);
 		SetActorEnableCollision(false);
 	}

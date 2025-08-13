@@ -125,9 +125,9 @@ bool ABeeBuildingMaterialBeeswax::TrySnapPuzzlePieceToPlace()
 		return false;
 	}
 	
-	const USceneComponent* TestSlotComponent = BuildingSlot->GetPuzzleSlotComponent();
+	const FVector TestSlotLocation = BuildingSlot->GetPuzzleCenterLocation();
 	//TODO: 위치 조정 개선 필요
-	const FVector Distance = TestSlotComponent->GetComponentLocation() - TestPuzzlePiece->GetComponentLocation();
+	const FVector Distance = TestSlotLocation - TestPuzzlePiece->GetComponentLocation();
 	SetActorLocation(GetActorLocation() + Distance);
 	SetLastPlacedPoint();
 

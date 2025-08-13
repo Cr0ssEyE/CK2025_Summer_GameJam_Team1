@@ -17,6 +17,9 @@ public:
 	// Sets default values for this actor's properties
 	ABeeBuildingMaterialBeeswax();
 
+public:
+	FORCEINLINE bool IsOnPuzzlePlace() const { return bIsOnPuzzlePlace; }
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

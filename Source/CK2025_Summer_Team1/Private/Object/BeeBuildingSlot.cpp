@@ -3,6 +3,7 @@
 
 #include "Object/BeeBuildingSlot.h"
 #include "Constant/BeeCollisionNames.h"
+#include "Game/BeePuzzleManageSubsystem.h"
 
 
 // Sets default values
@@ -14,14 +15,15 @@ ABeeBuildingSlot::ABeeBuildingSlot()
 	RootComponent = MeshComponent;
 	MeshComponent->SetCollisionProfileName(CP_PLACE_OBJECT);
 	
-	PuzzleSlotComponent = CreateDefaultSubobject<UBeePuzzleSlotComponent>(TEXT("PuzzleSlotComponent"));
-	PuzzleSlotComponent->SetupAttachment(RootComponent);
+	PuzzleCenterComponent = CreateDefaultSubobject<UBillboardComponent>(TEXT("PuzzleCenterComponent"));
+	PuzzleCenterComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void ABeeBuildingSlot::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>()->RegisterPuzzleSlot(this);
 }
 
