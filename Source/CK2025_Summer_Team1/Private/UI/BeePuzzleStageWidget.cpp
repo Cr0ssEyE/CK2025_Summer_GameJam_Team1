@@ -2,3 +2,8 @@
 
 
 #include "UI/BeePuzzleStageWidget.h"
+
+void UBeePuzzleStageWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+}

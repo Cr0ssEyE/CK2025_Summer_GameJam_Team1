@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BeePopUpWidget.h"
+#include "BeeExitCheckWidget.h"
 #include "BeeSkipWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CK2025_SUMMER_TEAM1_API UBeeSkipWidget : public UBeePopUpWidget
+class CK2025_SUMMER_TEAM1_API UBeeSkipWidget : public UBeeExitCheckWidget
 {
 	GENERATED_BODY()
 };

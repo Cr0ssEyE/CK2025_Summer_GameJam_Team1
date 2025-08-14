@@ -2,3 +2,8 @@
 
 
 #include "UI/BeeLobbyWidget.h"
+
+void UBeeLobbyWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+}

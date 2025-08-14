@@ -23,7 +23,10 @@ public:
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "SaveInfo")
 	FString SaveFileName;
-	
+
 	UPROPERTY(BlueprintReadWrite, Category = "SaveInfo")
 	int32 MaxClearedStageNumber;
+
+	UPROPERTY(BlueprintReadWrite, Category = "SaveInfo")
+	int32 LastClearedStageNumber;
 };

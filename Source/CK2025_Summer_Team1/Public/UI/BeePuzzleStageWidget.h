@@ -13,4 +13,7 @@ UCLASS()
 class CK2025_SUMMER_TEAM1_API UBeePuzzleStageWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	virtual void NativeConstruct() override;
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BeeSettingEnumerations.generated.h"
 
 UENUM(BlueprintType)
 enum class EResolutionTypes : uint8
@@ -25,7 +26,7 @@ struct FResolutionValueHelper
 		ResolutionValues.Emplace("1600", "900"); // HDP
 		ResolutionValues.Emplace("1920", "1080"); // FHD
 
-		EnumPath = TEXT("/Script/Project_LLL.EResolutionTypes");
+		EnumPath = TEXT("/Script/CK2025_Summer_Team1.EResolutionTypes");
 	}
 
 	TArray<TTuple<FString, FString>> ResolutionValues;

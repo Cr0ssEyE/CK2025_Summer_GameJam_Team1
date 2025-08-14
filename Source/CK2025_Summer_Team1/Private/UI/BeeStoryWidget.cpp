@@ -2,3 +2,8 @@
 
 
 #include "UI/BeeStoryWidget.h"
+
+void UBeeStoryWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+}

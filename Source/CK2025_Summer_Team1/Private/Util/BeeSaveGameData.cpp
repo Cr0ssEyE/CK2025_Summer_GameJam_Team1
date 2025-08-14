@@ -4,8 +4,8 @@
 #include "Util/BeeSaveGameData.h"
 
 UBeeSaveGameData::UBeeSaveGameData() :
-SaveFileName(DEFAULT_FILE_NAME),
-MaxClearedStageNumber(DEFAULT_FILE_INDEX)
+	SaveFileName(DEFAULT_FILE_NAME),
+	MaxClearedStageNumber(0),
+	LastClearedStageNumber(0)
 {
-	
 }

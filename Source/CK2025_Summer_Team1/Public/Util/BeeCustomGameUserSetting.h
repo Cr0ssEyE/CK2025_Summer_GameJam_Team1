@@ -13,16 +13,16 @@ UCLASS(BlueprintType)
 class CK2025_SUMMER_TEAM1_API UBeeCustomGameUserSetting : public UGameUserSettings
 {
 	GENERATED_BODY()
-	
+
 public:
+	UBeeCustomGameUserSetting(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
 	UFUNCTION(BlueprintCallable)
 	static UBeeCustomGameUserSetting* GetCustomGameUserSettings();
 
 	virtual void ApplySettings(bool bCheckForCommandLineOverrides) override;
 	
 	void ApplySoundSettings();
-
-	void ApplyGameplaySettings();
 
 	virtual void SetToDefaults() override;
 	
