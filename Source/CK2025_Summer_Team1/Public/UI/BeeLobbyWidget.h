@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "BeeLobbyWidget.generated.h"
 
+class UBeeExitCheckWidget;
+class UButton;
+
 /**
  * 
  */
@@ -16,4 +19,39 @@ class CK2025_SUMMER_TEAM1_API UBeeLobbyWidget : public UUserWidget
 
 public:
 	virtual void NativeConstruct() override;
+
+protected:
+	UFUNCTION(BlueprintCallable)
+	void OnFadeInComplete();
+
+	UFUNCTION(BlueprintCallable)
+	void OnNewStartButtonClicked();
+	
+	UFUNCTION(BlueprintCallable)
+	void OnStartButtonClicked();
+
+	UFUNCTION(BlueprintCallable)
+	void OnExitButtonClicked();
+	
+	UFUNCTION(BlueprintCallable)
+	void LoadStageMenuLevel();
+
+	UFUNCTION(BlueprintCallable)
+	void CloseExitCheckWidget();
+
+	UFUNCTION(BlueprintCallable)
+	void ExitGame();
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UButton> StartButton;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UButton> NewStartButton;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UButton> ExitButton;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UBeeExitCheckWidget> ExitCheckWidget;
 };

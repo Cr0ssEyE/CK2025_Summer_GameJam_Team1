@@ -8,6 +8,7 @@
 #include "Constant/BeeAssetLocations.h"
 #include "Constant/BeeCollisionNames.h"
 #include "Data/BeePlayerDataAsset.h"
+#include "Game/BeeGameInstance.h"
 #include "Object/BeeBuildingMaterialBase.h"
 #include "Util/BeeConstructorHelper.h"
 
@@ -33,7 +34,8 @@ ABeePlayerController::ABeePlayerController()
 void ABeePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->OnPlayerSpawn();
 }
 
 void ABeePlayerController::SetupInputComponent()

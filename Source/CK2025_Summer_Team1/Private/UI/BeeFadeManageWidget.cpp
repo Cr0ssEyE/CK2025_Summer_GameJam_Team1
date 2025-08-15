@@ -2,27 +2,36 @@
 
 
 #include "UI/BeeFadeManageWidget.h"
+
+#include "Game/BeeGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
 void UBeeFadeManageWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
 	
 }
 
 void UBeeFadeManageWidget::BeginFadeIn()
 {
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	PlayerController->DisableInput(PlayerController);
-	
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+	{
+		PlayerController->DisableInput(PlayerController);
+	}
+
+	SetVisibility(ESlateVisibility::Visible);
 	PlayAnimationForward(FadeInAnimation);
 }
 
 void UBeeFadeManageWidget::BeginFadeOut()
 {
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	PlayerController->DisableInput(PlayerController);
-	
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+	{
+		PlayerController->DisableInput(PlayerController);
+	}
+
+	SetVisibility(ESlateVisibility::Visible);
 	PlayAnimationForward(FadeOutAnimation);
 }
 
@@ -30,17 +39,23 @@ void UBeeFadeManageWidget::OnAnimationFinished_Implementation(const UWidgetAnima
 {
 	Super::OnAnimationFinished_Implementation(Animation);
 
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	PlayerController->EnableInput(PlayerController);
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+	{
+		PlayerController->EnableInput(PlayerController);
+	}
+	
+	UBeeGameInstance* GameInstance = GetWorld()->GetGameInstance<UBeeGameInstance>();
 	
 	if (Animation == FadeInAnimation)
 	{
-		OnFadeInCompleteEvent.Broadcast();
-		return;
+		GameInstance->FadeWidgetFadeInCompleteEvent.Broadcast();
+		GameInstance->OnFadeComplete();
 	}
-	
-	if (Animation == FadeOutAnimation)
+	else if (Animation == FadeOutAnimation)
 	{
-		OnFadeOutCompleteEvent.Broadcast();
+		GameInstance->FadeWidgetFadeOutCompleteEvent.Broadcast();
+		GameInstance->OnFadeComplete();
 	}
+
+	SetVisibility(ESlateVisibility::Hidden);
 }

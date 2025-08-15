@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "BeeSubMenuWidget.generated.h"
 
+class UBeeExitCheckWidget;
+class UBeeSettingWidget;
+class UButton;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSubMenuClosedEvent);
 
 /**
@@ -25,7 +28,29 @@ public:
 	FOnSubMenuClosedEvent OnSubMenuClosedEvent;
 	
 protected:
+	UFUNCTION(BlueprintCallable)
+	void OnReturnBtnClicked();
+	
+	UFUNCTION(BlueprintCallable)
+	void OnExitBtnClicked();
+	
+	UFUNCTION(BlueprintCallable)
+	void OnSettingBtnClicked();
+	
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UButton> ReturnBtn;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UButton> ExitBtn;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UButton> SettingBtn;
 
 protected:
-	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UBeeSettingWidget> SettingWidget;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UBeeExitCheckWidget> ExitCheckWidget;
 };

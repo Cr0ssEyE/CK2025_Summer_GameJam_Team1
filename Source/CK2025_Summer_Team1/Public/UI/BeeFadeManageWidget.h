@@ -8,8 +8,6 @@
 
 class UImage;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFadeCompleteEvent);
-
 /**
  * 
  */
@@ -24,12 +22,7 @@ public:
 	virtual void BeginFadeIn();
 	
 	virtual void BeginFadeOut();
-
-public:
-	FOnFadeCompleteEvent OnFadeInCompleteEvent;
 	
-	FOnFadeCompleteEvent OnFadeOutCompleteEvent;
-
 protected:
 	virtual void OnAnimationFinished_Implementation(const UWidgetAnimation* Animation) override;
 	

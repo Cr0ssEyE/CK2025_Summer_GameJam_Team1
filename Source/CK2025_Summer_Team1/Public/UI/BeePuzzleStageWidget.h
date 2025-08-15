@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Button.h"
 #include "BeePuzzleStageWidget.generated.h"
 
+class UBeeSubMenuWidget;
 /**
  * 
  */
@@ -16,4 +18,29 @@ class CK2025_SUMMER_TEAM1_API UBeePuzzleStageWidget : public UUserWidget
 
 public:
 	virtual void NativeConstruct() override;
+
+public:
+
+protected:
+	UFUNCTION(BlueprintCallable)
+	void OpenSubMenu();
+
+	UFUNCTION(BlueprintCallable)
+	void RestartStage();
+	
+	UFUNCTION(BlueprintCallable)
+	void UndoLastAction();
+	
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UButton> OpenSubMenuBtn;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UButton> RestartBtn;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UButton> UndoBtn;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UBeeSubMenuWidget> SubMenuWidget;
 };

@@ -13,11 +13,19 @@ struct FStringDataTable : public FTableRowBase
 
 public:
 	FStringDataTable() :
-		Speaker(""),
-		Words("")
+	StageNumber(0),
+	IsPlayer(true),
+	Speaker(""),
+	Words("")
 	{
 		
 	}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", DisplayName = "스테이지 번호")
+	int32 StageNumber;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", DisplayName = "플레이어 텍스트")
+	bool IsPlayer;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", DisplayName = "화자")
 	FString Speaker;

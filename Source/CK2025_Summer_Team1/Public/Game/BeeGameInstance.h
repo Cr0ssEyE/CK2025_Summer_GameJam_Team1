@@ -10,6 +10,8 @@
 class UBeeFadeManageWidget;
 class UBeeSaveGameData;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFadeWidgetEvent);
+
 /**
  * 
  */
@@ -27,21 +29,30 @@ public:
 	virtual void OnWorldChanged(UWorld* OldWorld, UWorld* NewWorld) override;
 
 public:
-	FORCEINLINE void FadeIn() const { FadeManageWidget->BeginFadeIn(); }
-	FORCEINLINE FOnFadeCompleteEvent* GetOnFadeInCompleteDelegate() { return &FadeManageWidget->OnFadeInCompleteEvent; }
-	
-	FORCEINLINE void FadeOut() const { FadeManageWidget->BeginFadeOut(); }
-	FORCEINLINE FOnFadeCompleteEvent* GetOnFadeOutCompleteDelegate() { return &FadeManageWidget->OnFadeOutCompleteEvent; }
+	FORCEINLINE void FadeIn() { FadeManageWidget->BeginFadeIn(); bIsFadeOnGoing = true; }
+	FORCEINLINE void FadeOut() { FadeManageWidget->BeginFadeOut(); bIsFadeOnGoing = true; }
+	FORCEINLINE void OnFadeComplete() { bIsFadeOnGoing = false; }
 
+	FORCEINLINE bool IsFadeOnGoing() const { return bIsFadeOnGoing; }
+	
+	FOnFadeWidgetEvent FadeWidgetFadeInCompleteEvent;
+	
+	FOnFadeWidgetEvent FadeWidgetFadeOutCompleteEvent;
+	
 	FORCEINLINE void SetLastClearedStageNumber(const int32 StageNumber) { LastClearedStageNumber = StageNumber; }
 	FORCEINLINE int32 GetLastClearedStageNumber() const { return LastClearedStageNumber; }
 
+	FORCEINLINE void SetCurrentPlayingStageNumber(const int32 StageNumber) { CurrentPlayingStageNumber = StageNumber; }
+	FORCEINLINE int32 GetCurrentPlayingStageNumber() const { return CurrentPlayingStageNumber; }
+	
 	FORCEINLINE UBeeSaveGameData* GetCurrentSaveGameData() const { return CurrentSaveGameData; }
 	
 	void SaveCurrentSaveGameData();
 	
 	void CreateDefaultSaveSlot();
 
+	void OnPlayerSpawn();
+	
 private:
 	UPROPERTY()
 	TObjectPtr<UBeeSaveGameData> CurrentSaveGameData;
@@ -53,6 +64,10 @@ private:
 	TSubclassOf<UBeeFadeManageWidget> FadeManageWidgetClass;
 
 	UPROPERTY()
-	int32 LastClearedStageNumber;
+	int32 CurrentPlayingStageNumber;
 	
+	UPROPERTY()
+	int32 LastClearedStageNumber;
+
+	uint32 bIsFadeOnGoing : 1;
 };

@@ -34,17 +34,17 @@ public:
 	
 protected:
 	UFUNCTION(BlueprintCallable)
-	void OpenMenuPopUpWidget();
+	void OpenSubMenuWidget();
 
 	UFUNCTION(BlueprintCallable)
 	void OnFadeInComplete();
 
 	UFUNCTION(BlueprintCallable)
 	void OnFadeOutComplete();
-	
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
-	TObjectPtr<UBeeSubMenuWidget> BeeMenuPopUpWidget;
+	TObjectPtr<UBeeSubMenuWidget> BeeSubMenuWidget;
 
 protected:
 	UFUNCTION(BlueprintCallable)

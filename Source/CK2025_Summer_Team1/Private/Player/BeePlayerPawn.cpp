@@ -17,7 +17,7 @@ ABeePlayerPawn::ABeePlayerPawn()
 
 	// create the root
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-
+	
 	// create the camera
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));

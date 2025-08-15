@@ -11,25 +11,29 @@
 #include "Util/BeeSaveGameData.h"
 
 UBeeGameInstance::UBeeGameInstance():
+CurrentPlayingStageNumber(0),
 LastClearedStageNumber(0)
 {
-	
+	FadeManageWidgetClass = FBeeConstructorHelper::FindAndGetClass<UBeeFadeManageWidget>(LOCATION_FADE_WIDGET);
 }
 
 void UBeeGameInstance::Init()
 {
 	Super::Init();
 
-	if (UBeeSaveGameData* SaveData = Cast<UBeeSaveGameData>(UGameplayStatics::LoadGameFromSlot(DEFAULT_FILE_NAME, DEFAULT_FILE_INDEX)))
+	if (IsValid(CurrentSaveGameData))
 	{
-		CurrentSaveGameData = SaveData;
+		SaveCurrentSaveGameData();
 	}
-	else
+	
+	if (!IsValid(CurrentSaveGameData))
 	{
-		CreateDefaultSaveSlot();
+		CurrentSaveGameData = Cast<UBeeSaveGameData>(UGameplayStatics::LoadGameFromSlot(DEFAULT_FILE_NAME, DEFAULT_FILE_INDEX));
+		if (!IsValid(CurrentSaveGameData))
+		{
+			CreateDefaultSaveSlot();
+		}
 	}
-
-	FadeManageWidgetClass = FBeeConstructorHelper::FindAndGetClass<UBeeFadeManageWidget>(LOCATION_FADE_WIDGET);
 }
 
 void UBeeGameInstance::Shutdown()
@@ -40,12 +44,7 @@ void UBeeGameInstance::Shutdown()
 void UBeeGameInstance::OnWorldChanged(UWorld* OldWorld, UWorld* NewWorld)
 {
 	Super::OnWorldChanged(OldWorld, NewWorld);
-	FadeManageWidget = CreateWidget<UBeeFadeManageWidget>(NewWorld, FadeManageWidgetClass);
-	if (FadeManageWidget)
-	{
-		FadeManageWidget->AddToViewport();
-		FadeManageWidget->BeginFadeIn();
-	}
+	
 }
 
 void UBeeGameInstance::SaveCurrentSaveGameData()
@@ -72,6 +71,22 @@ void UBeeGameInstance::SaveCurrentSaveGameData()
 
 void UBeeGameInstance::CreateDefaultSaveSlot()
 {
+	CurrentSaveGameData = nullptr;
 	UBeeSaveGameData* NewData = Cast<UBeeSaveGameData>(UGameplayStatics::CreateSaveGameObject(UBeeSaveGameData::StaticClass()));
 	UGameplayStatics::SaveGameToSlot(NewData, DEFAULT_FILE_NAME, DEFAULT_FILE_INDEX);
+	CurrentPlayingStageNumber = 0;
+	LastClearedStageNumber = 0;
+
+	CurrentSaveGameData = NewData;
+}
+
+void UBeeGameInstance::OnPlayerSpawn()
+{
+	Init();
+	FadeManageWidget = CreateWidget<UBeeFadeManageWidget>(GetWorld(), FadeManageWidgetClass);
+	if (FadeManageWidget)
+	{
+		FadeManageWidget->AddToViewport(999);
+		FadeManageWidget->BeginFadeIn();
+	}
 }

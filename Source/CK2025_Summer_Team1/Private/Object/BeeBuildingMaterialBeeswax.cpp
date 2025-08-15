@@ -73,6 +73,20 @@ void ABeeBuildingMaterialBeeswax::CheckPuzzlePieceCanSnapToPlace()
 			HitResult,
 			Start,
 			End,
+			ECC_TRACE_PUZZLE_OBJECT,
+			CollisionParams
+		);
+		DrawDebugLine(GetWorld(), Start, End, bHit ? FColor::Yellow : FColor::Yellow, false, 0.1f, 0, 1.0f);
+		if (bHit)
+		{
+			SetActorLocation(LastPlacedPoint);
+			return;
+		}
+		
+		bHit = GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			Start,
+			End,
 			ECC_TRACE_PUZZLE_SLOT_OBJECT,
 			CollisionParams
 		);
@@ -80,6 +94,7 @@ void ABeeBuildingMaterialBeeswax::CheckPuzzlePieceCanSnapToPlace()
 		if (bHit)
 		{
 			PuzzleMatchingCount++;
+			continue;
 		}
 	}
 	

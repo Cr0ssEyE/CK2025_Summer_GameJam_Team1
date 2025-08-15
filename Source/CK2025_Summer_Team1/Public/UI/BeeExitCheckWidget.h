@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Button.h"
 #include "BeeExitCheckWidget.generated.h"
+
+class FOnButtonClickedEvent;
 
 /**
  * 
@@ -17,16 +20,14 @@ class CK2025_SUMMER_TEAM1_API UBeeExitCheckWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
-protected:
-	UFUNCTION(BlueprintCallable)
-	void ExitConfirmButtonEvent();
+	FOnButtonClickedEvent GetConfirmButtonClickedEvent() const { return ConfirmBtn->OnClicked; }
+	FOnButtonClickedEvent GetCancelButtonClickedEvent() const { return CancelBtn->OnClicked; }
 
-	UFUNCTION(BlueprintCallable)
-	void ExitCancelButtonEvent();
-
-	UFUNCTION(BlueprintCallable)
-	void CloseExitCheckWidget();
-	
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UButton> ConfirmBtn;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UButton> CancelBtn;
 	
 };

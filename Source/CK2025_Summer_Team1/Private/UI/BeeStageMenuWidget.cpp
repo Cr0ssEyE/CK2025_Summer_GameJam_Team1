@@ -13,7 +13,9 @@ void UBeeStageMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	MenuBtn->OnClicked.AddDynamic(this, &UBeeStageMenuWidget::OpenMenuPopUpWidget);
+	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->FadeWidgetFadeInCompleteEvent.AddDynamic(this, &UBeeStageMenuWidget::OnFadeInComplete);
+	
+	MenuBtn->OnClicked.AddDynamic(this, &UBeeStageMenuWidget::OpenSubMenuWidget);
 	StageEnterBtn->OnClicked.AddDynamic(this, &UBeeStageMenuWidget::OnStageEnterBtnClicked);
 	StageOneBtn->OnClicked.AddDynamic(this, &UBeeStageMenuWidget::OnStageOneBtnClicked);
 	StageTwoBtn->OnClicked.AddDynamic(this, &UBeeStageMenuWidget::OnStageTwoBtnClicked);
@@ -22,8 +24,6 @@ void UBeeStageMenuWidget::NativeConstruct()
 	StageFiveBtn->OnClicked.AddDynamic(this, &UBeeStageMenuWidget::OnStageFiveBtnClicked);
 
 	StageEnterBtn->SetVisibility(ESlateVisibility::Hidden);
-
-	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->GetOnFadeInCompleteDelegate()->AddDynamic(this, &UBeeStageMenuWidget::OnFadeInComplete);
 }
 
 FReply UBeeStageMenuWidget::NativeOnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
@@ -32,13 +32,13 @@ FReply UBeeStageMenuWidget::NativeOnKeyDown(const FGeometry& MyGeometry, const F
 
 	if (InKeyEvent.GetKey() == EKeys::Escape)
 	{
-		if (BeeMenuPopUpWidget->IsVisible())
+		if (BeeSubMenuWidget->IsVisible())
 		{
-			BeeMenuPopUpWidget->SetVisibility(ESlateVisibility::Hidden);
+			BeeSubMenuWidget->SetVisibility(ESlateVisibility::Hidden);
 			return FReply::Handled();
 		}
 		
-		OpenMenuPopUpWidget();
+		OpenSubMenuWidget();
 		return FReply::Handled();
 	}
 
@@ -72,11 +72,11 @@ void UBeeStageMenuWidget::PlayNewBuildingCreateAnimation(const int32 StageNumber
 	PlayerController->DisableInput(PlayerController);
 }
 
-void UBeeStageMenuWidget::OpenMenuPopUpWidget()
+void UBeeStageMenuWidget::OpenSubMenuWidget()
 {
-	if (!BeeMenuPopUpWidget->IsVisible())
+	if (!BeeSubMenuWidget->IsVisible())
 	{
-		BeeMenuPopUpWidget->SetVisibility(ESlateVisibility::Visible);
+		BeeSubMenuWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
@@ -108,7 +108,7 @@ void UBeeStageMenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimat
 
 void UBeeStageMenuWidget::OnStageEnterBtnClicked()
 {
-	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->GetOnFadeOutCompleteDelegate()->AddDynamic(this, &UBeeStageMenuWidget::EnterSelectedStage);
+	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->FadeWidgetFadeOutCompleteEvent.AddDynamic(this, &UBeeStageMenuWidget::EnterSelectedStage);
 	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->FadeOut();
 }
 
@@ -159,6 +159,7 @@ void UBeeStageMenuWidget::OnStageFiveBtnClicked()
 
 void UBeeStageMenuWidget::EnterSelectedStage()
 {
+	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->SetCurrentPlayingStageNumber(SelectedStageNumber);
 	switch (SelectedStageNumber)
 	{
 		case 1:

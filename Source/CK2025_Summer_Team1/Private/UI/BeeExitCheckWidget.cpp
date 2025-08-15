@@ -3,23 +3,11 @@
 
 #include "UI/BeeExitCheckWidget.h"
 
+#include "Components/Button.h"
+
 void UBeeExitCheckWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	
+
 }
 
-void UBeeExitCheckWidget::ExitConfirmButtonEvent()
-{
-	
-}
-
-void UBeeExitCheckWidget::ExitCancelButtonEvent()
-{
-	
-}
-
-void UBeeExitCheckWidget::CloseExitCheckWidget()
-{
-	
-}
