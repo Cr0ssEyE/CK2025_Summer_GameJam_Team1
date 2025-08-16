@@ -4,6 +4,8 @@
 #include "UI/BeeStageMenuWidget.h"
 
 #include "Components/Button.h"
+#include "Components/Image.h"
+#include "Components/TextBlock.h"
 #include "Game/BeeGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/BeeSubMenuWidget.h"
@@ -13,7 +15,8 @@ void UBeeStageMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->FadeWidgetFadeInCompleteEvent.AddDynamic(this, &UBeeStageMenuWidget::OnFadeInComplete);
+	UBeeGameInstance* GameInstance = GetWorld()->GetGameInstanceChecked<UBeeGameInstance>();
+	GameInstance->FadeWidgetFadeInCompleteEvent.AddDynamic(this, &UBeeStageMenuWidget::OnFadeInComplete);
 	
 	MenuBtn->OnClicked.AddDynamic(this, &UBeeStageMenuWidget::OpenSubMenuWidget);
 	StageEnterBtn->OnClicked.AddDynamic(this, &UBeeStageMenuWidget::OnStageEnterBtnClicked);
@@ -24,6 +27,25 @@ void UBeeStageMenuWidget::NativeConstruct()
 	StageFiveBtn->OnClicked.AddDynamic(this, &UBeeStageMenuWidget::OnStageFiveBtnClicked);
 
 	StageEnterBtn->SetVisibility(ESlateVisibility::Hidden);
+	TArray<UButton*> StageButtons = { StageOneBtn, StageTwoBtn, StageThreeBtn, StageFourBtn, StageFiveBtn };
+	TArray<UImage*> StageBuildingImages = { StageOneBuildingImage, StageTwoBuildingImage, StageThreeBuildingImage, StageFourBuildingImage, StageFiveBuildingImage };
+	for (int i = 5; i > GameInstance->GetLastClearedStageNumber(); --i)
+	{
+		if (i != 1)
+		{
+			UTextBlock* StageText = Cast<UTextBlock>(StageButtons[i - 1]->GetChildAt(0));
+			FSlateFontInfo FontInfo = StageText->GetFont();
+			FontInfo.OutlineSettings.OutlineColor = DisabledStageTextColor;
+			StageText->SetFont(FontInfo);
+		
+			FButtonStyle ButtonStyle = StageButtons[i - 1]->GetStyle();
+			ButtonStyle.Normal.SetResourceObject(DisabledStageTexture);
+			StageButtons[i - 1]->SetStyle(ButtonStyle);
+			StageButtons[i - 1]->SetIsEnabled(false);
+		}
+		
+		StageBuildingImages[i - 1]->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 FReply UBeeStageMenuWidget::NativeOnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
@@ -32,9 +54,9 @@ FReply UBeeStageMenuWidget::NativeOnKeyDown(const FGeometry& MyGeometry, const F
 
 	if (InKeyEvent.GetKey() == EKeys::Escape)
 	{
-		if (BeeSubMenuWidget->IsVisible())
+		if (SubMenuWidget->IsVisible())
 		{
-			BeeSubMenuWidget->SetVisibility(ESlateVisibility::Hidden);
+			SubMenuWidget->SetVisibility(ESlateVisibility::Hidden);
 			return FReply::Handled();
 		}
 		
@@ -74,9 +96,9 @@ void UBeeStageMenuWidget::PlayNewBuildingCreateAnimation(const int32 StageNumber
 
 void UBeeStageMenuWidget::OpenSubMenuWidget()
 {
-	if (!BeeSubMenuWidget->IsVisible())
+	if (!SubMenuWidget->IsVisible())
 	{
-		BeeSubMenuWidget->SetVisibility(ESlateVisibility::Visible);
+		SubMenuWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 

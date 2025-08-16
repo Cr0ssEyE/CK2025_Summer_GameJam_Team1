@@ -44,7 +44,7 @@ protected:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
-	TObjectPtr<UBeeSubMenuWidget> BeeSubMenuWidget;
+	TObjectPtr<UBeeSubMenuWidget> SubMenuWidget;
 
 protected:
 	UFUNCTION(BlueprintCallable)
@@ -127,16 +127,16 @@ protected:
 	TObjectPtr<UImage> StageOneBuildingImage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
-	TObjectPtr<UImage> StageBuildingTwoImage;
+	TObjectPtr<UImage> StageTwoBuildingImage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
-	TObjectPtr<UImage> StageBuildingThreeImage;
+	TObjectPtr<UImage> StageThreeBuildingImage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
-	TObjectPtr<UImage> StageBuildingFourImage;
+	TObjectPtr<UImage> StageFourBuildingImage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
-	TObjectPtr<UImage> StageBuildingFiveImage;
+	TObjectPtr<UImage> StageFiveBuildingImage;
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Transient, meta=(BindWidgetAnim))
@@ -154,6 +154,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Transient, meta=(BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> StageFiveBuildingCreateAnimation;
 
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+	TObjectPtr<UTexture2D> DisabledStageTexture;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+	FLinearColor DisabledStageTextColor;
+	
 protected:
 	uint32 SelectedStageNumber;
 };

@@ -22,10 +22,6 @@ void UBeeLobbyWidget::NativeConstruct()
 	StartButton->SetVisibility(ESlateVisibility::Hidden);
 	StartButton->SetIsEnabled(false);
 
-	NewStartButton->OnClicked.AddDynamic(this, &UBeeLobbyWidget::OnNewStartButtonClicked);
-	NewStartButton->SetVisibility(ESlateVisibility::Hidden);
-	NewStartButton->SetIsEnabled(false);
-	
 	ExitButton->OnClicked.AddDynamic(this, &UBeeLobbyWidget::OnExitButtonClicked);
 	ExitButton->SetVisibility(ESlateVisibility::Hidden);
 	ExitButton->SetIsEnabled(false);
@@ -39,25 +35,8 @@ void UBeeLobbyWidget::NativeConstruct()
 void UBeeLobbyWidget::OnFadeInComplete()
 {
 	StartButton->SetIsEnabled(true);
-	NewStartButton->SetVisibility(ESlateVisibility::Visible);
-	if (IsValid(GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->GetCurrentSaveGameData()))
-	{
-		NewStartButton->SetIsEnabled(true);
-		NewStartButton->SetVisibility(ESlateVisibility::Visible);
-	}
-	else
-	{
-		NewStartButton->RemoveFromParent();
-	}
-
 	ExitButton->SetIsEnabled(true);
 	ExitButton->SetVisibility(ESlateVisibility::Visible);
-}
-
-void UBeeLobbyWidget::OnNewStartButtonClicked()
-{
-	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->CreateDefaultSaveSlot();
-	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->FadeOut();
 }
 
 void UBeeLobbyWidget::OnStartButtonClicked()

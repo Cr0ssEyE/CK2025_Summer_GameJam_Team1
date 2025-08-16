@@ -90,30 +90,12 @@ protected:
 	float DialogueTextDisplayTick;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", DisplayName = "플레이어 캐릭터 이름 배경 이미지 머티리얼")
-	TObjectPtr<UMaterial> PlayerCharacterNameBackgroundMaterial;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", DisplayName = "플레이어 캐릭터 대화 배경 아웃라인 컬러")
+	FLinearColor PlayerCharacterDialogueOutlineColor;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", DisplayName = "플레이어 캐릭터 대화 배경 이미지 머티리얼")
-	TObjectPtr<UMaterial> PlayerCharacterDialogueMaterial;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", DisplayName = "NPC 대화 배경 이미지 아웃라인 컬러")
+	FLinearColor OtherCharacterDialogueOutlineColor;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", DisplayName = "NPC 이름 배경 이미지 머티리얼")
-	TObjectPtr<UMaterial> OtherCharacterNameBackgroundMaterial;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", DisplayName = "NPC 대화 배경 이미지 머티리얼")
-	TObjectPtr<UMaterial> OtherCharacterDialogueMaterial;
-
-	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> PlayerCharacterNameBackgroundDynamicMaterial;
-
-	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> PlayerCharacterDialogueDynamicMaterial;
-
-	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> OtherCharacterNameBackgroundDynamicMaterial;
-
-	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> OtherCharacterDialogueDynamicMaterial;
-	
 protected:
 	const FStringDataTable* CurrentDialogueText;
 	

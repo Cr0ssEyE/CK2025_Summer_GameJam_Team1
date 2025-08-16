@@ -18,11 +18,6 @@ void UBeeStoryWidget::NativeConstruct()
 	
 	TArray<FStringDataTable*> LoadedStringDataArray;
 	DialogueTextDataTable->GetAllRows<FStringDataTable>(TEXT("Failed To Load Reward Data Tables"), LoadedStringDataArray);
-
-	PlayerCharacterNameBackgroundDynamicMaterial = UMaterialInstanceDynamic::Create(PlayerCharacterNameBackgroundMaterial, this);
-	PlayerCharacterDialogueDynamicMaterial = UMaterialInstanceDynamic::Create(PlayerCharacterDialogueMaterial, this);
-	OtherCharacterNameBackgroundDynamicMaterial = UMaterialInstanceDynamic::Create(OtherCharacterNameBackgroundMaterial, this);
-	OtherCharacterDialogueDynamicMaterial = UMaterialInstanceDynamic::Create(OtherCharacterDialogueMaterial, this);
 	
 	for (const FStringDataTable* LoadedStringData : LoadedStringDataArray)
 	{
@@ -39,6 +34,8 @@ void UBeeStoryWidget::NativeConstruct()
 	ExitCheckWidget->GetConfirmButtonClickedEvent().AddDynamic(this, &UBeeStoryWidget::OnSkipButtonConfirmed);
 	ExitCheckWidget->GetCancelButtonClickedEvent().AddDynamic(this, &UBeeStoryWidget::OnSkipButtonCanceled);
 	TextDisplayEventBtn->OnClicked.AddDynamic(this, &UBeeStoryWidget::OnTextDisplayEventBtnClicked);
+
+	ClickHintImage->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UBeeStoryWidget::OnTextDisplayEventBtnClicked()
@@ -74,7 +71,7 @@ void UBeeStoryWidget::OnSkipButtonConfirmed()
 
 void UBeeStoryWidget::OnSkipButtonCanceled()
 {
-	
+	ExitCheckWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UBeeStoryWidget::SetNextSpeaker()
@@ -91,21 +88,24 @@ void UBeeStoryWidget::SetNextSpeaker()
 		return;
 	}
 	
+	ClickHintImage->SetVisibility(ESlateVisibility::Hidden);
 	CurrentDialogueText = DialogueTextData[NextDialogueIndex];
 	CharacterNameTextBlock->SetText(FText::FromString(CurrentDialogueText->Speaker));
 	CharacterDialogueTextBlock->SetText(FText::FromString(""));
 	CurrentWordsIndex = 0;
 	
 	//TODO: 화자에 따라 캐랙터 배경 및 색상 변경
-	if (CurrentDialogueText->IsPlayer)
+	if (CurrentDialogueText->)
 	{
-		CharacterNameBackgroundImage->SetBrushFromMaterial(PlayerCharacterNameBackgroundDynamicMaterial);
-		CharacterDialogueBackgroundImage->SetBrushFromMaterial(PlayerCharacterDialogueDynamicMaterial);
+		CharacterDialogueBackgroundImage->SetColorAndOpacity(PlayerCharacterDialogueOutlineColor);
+		PlayerCharacterImage->SetColorAndOpacity(FLinearColor::White);
+		OtherCharacterImage->SetColorAndOpacity(FLinearColor::Gray);
 	}
 	else
 	{
-		CharacterNameBackgroundImage->SetBrushFromMaterial(OtherCharacterNameBackgroundDynamicMaterial);
-		CharacterDialogueBackgroundImage->SetBrushFromMaterial(OtherCharacterDialogueDynamicMaterial);
+		CharacterDialogueBackgroundImage->SetColorAndOpacity(OtherCharacterDialogueOutlineColor);
+		PlayerCharacterImage->SetColorAndOpacity(FLinearColor::Gray);
+		OtherCharacterImage->SetColorAndOpacity(FLinearColor::White);
 	}
 	
 	GetWorld()->GetTimerManager().SetTimer(DialogueTextDisplayingHandle, this, &UBeeStoryWidget::DisplayDialogueTextSequence, DialogueTextDisplayTick, true);
@@ -120,10 +120,12 @@ void UBeeStoryWidget::DisplayDialogueTextSequence()
 	if (CurrentDialogueTextString.Equals(CurrentDialogueText->Words))
 	{
 		GetWorld()->GetTimerManager().ClearTimer(DialogueTextDisplayingHandle);
+		ClickHintImage->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
 void UBeeStoryWidget::DisplayDialogueTextImmediately()
 {
 	 GetWorld()->GetTimerManager().ClearTimer(DialogueTextDisplayingHandle);
+	ClickHintImage->SetVisibility(ESlateVisibility::Visible);
 }

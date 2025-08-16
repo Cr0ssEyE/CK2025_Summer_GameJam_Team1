@@ -23,9 +23,6 @@ public:
 protected:
 	UFUNCTION(BlueprintCallable)
 	void OnFadeInComplete();
-
-	UFUNCTION(BlueprintCallable)
-	void OnNewStartButtonClicked();
 	
 	UFUNCTION(BlueprintCallable)
 	void OnStartButtonClicked();
@@ -45,10 +42,7 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
 	TObjectPtr<UButton> StartButton;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
-	TObjectPtr<UButton> NewStartButton;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
 	TObjectPtr<UButton> ExitButton;
 	

@@ -23,8 +23,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", DisplayName = "스테이지 번호")
 	int32 StageNumber;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", DisplayName = "클리어 여부")
+	bool IsClearStory;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", DisplayName = "플레이어 텍스트")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", DisplayName = "플레이어 텍스트 여부")
 	bool IsPlayer;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", DisplayName = "화자")
