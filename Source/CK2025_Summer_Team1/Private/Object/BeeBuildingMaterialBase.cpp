@@ -5,6 +5,8 @@
 
 #include "Constant/BeeCollisionNames.h"
 #include "Constant/BeeMaterialParamNames.h"
+#include "Game/BeeGameInstance.h"
+#include "Game/BeePuzzleManageSubsystem.h"
 
 ABeeBuildingMaterialBase::ABeeBuildingMaterialBase() :
 SpawnedPoint(FVector::ZeroVector),
@@ -18,9 +20,10 @@ void ABeeBuildingMaterialBase::BeginPlay()
 	Super::BeginPlay();
 
 	SpawnedPoint = GetActorLocation();
+	LastPlacedPoint = SpawnedPoint;
 }
 
-void ABeeBuildingMaterialBase::SetBuildingMaterialColor(const EBuildingMaterialBaseColor NewColorEnum, FColor NewColor)
+void ABeeBuildingMaterialBase::SetBuildingMaterialColor(const EBuildingMaterialBaseColor NewColorEnum, FColor NewColor, bool IsGenerateObject)
 {
 	BuildingMaterialColorEnum = NewColorEnum;
 	BuildingMaterialColor = NewColor;

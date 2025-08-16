@@ -65,6 +65,6 @@ private:
 	
 	UPROPERTY()
 	int32 LastClearedStageNumber;
-
+	
 	uint32 bIsFadeOnGoing : 1;
 };

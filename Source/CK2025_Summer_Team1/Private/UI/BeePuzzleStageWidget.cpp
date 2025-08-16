@@ -3,8 +3,10 @@
 
 #include "UI/BeePuzzleStageWidget.h"
 
+#include "Game/BeeGameInstance.h"
 #include "Game/BeePuzzleManageSubsystem.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/BeeStoryWidget.h"
 #include "UI/BeeSubMenuWidget.h"
 
 void UBeePuzzleStageWidget::NativeConstruct()
@@ -20,6 +22,10 @@ void UBeePuzzleStageWidget::NativeConstruct()
 
 	UBeePuzzleManageSubsystem* PuzzleManageSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UBeePuzzleManageSubsystem>();
 	PuzzleManageSubsystem->OnColorMixed.AddDynamic(this, &UBeePuzzleStageWidget::OnColorMixed);
+	PuzzleManageSubsystem->OnPuzzleFinished.AddDynamic(this, &UBeePuzzleStageWidget::OnPuzzleFinished);
+	
+	StoryWidget->SetVisibility(ESlateVisibility::Hidden);
+	SubMenuWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UBeePuzzleStageWidget::OpenSubMenu()
@@ -29,6 +35,7 @@ void UBeePuzzleStageWidget::OpenSubMenu()
 
 void UBeePuzzleStageWidget::RestartStage()
 {
+	UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UBeePuzzleManageSubsystem>()->ClearData();
 	FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld());
 	UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName), true);
 }
@@ -42,11 +49,17 @@ void UBeePuzzleStageWidget::UndoLastAction()
 		bIsCanUndo = PuzzleManageSubsystem->UndoBuildingMaterialColorMixAction();
 	}
 	
-	if (bIsCanUndo)
+	if (!bIsCanUndo)
 	{
 		UndoBtn->SetIsEnabled(false);
 		UndoBtn->SetColorAndOpacity(FLinearColor::Gray);
 	}
+}
+
+void UBeePuzzleStageWidget::OnPuzzleFinished()
+{
+	StoryWidget->SetCurrentStoryType(GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->GetCurrentPlayingStageNumber(), true);
+	StoryWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UBeePuzzleStageWidget::OnColorMixed()

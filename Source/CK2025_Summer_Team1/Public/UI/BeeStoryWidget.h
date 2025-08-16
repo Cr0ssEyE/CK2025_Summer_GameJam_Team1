@@ -25,7 +25,7 @@ public:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetCurrentStoryType(int32 StageNumber);
+	void SetCurrentStoryType(int32 StageNumber, bool IsPuzzleStage = false);
 	
 protected:
 	UFUNCTION(BlueprintCallable)

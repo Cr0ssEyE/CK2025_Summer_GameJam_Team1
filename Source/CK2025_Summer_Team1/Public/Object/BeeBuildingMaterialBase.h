@@ -32,7 +32,7 @@ public:
 
 	FORCEINLINE FVector GetLastPlacedPoint() const { return LastPlacedPoint; }
 	FORCEINLINE void SetLastPlacedPoint() { LastPlacedPoint = GetActorLocation(); }
-	void SetBuildingMaterialColor(const EBuildingMaterialBaseColor NewColorEnum, FColor NewColor);
+	void SetBuildingMaterialColor(const EBuildingMaterialBaseColor NewColorEnum, FColor NewColor, bool IsGenerateObject = false);
 	
 protected:
 	virtual void NotifyActorOnClicked(FKey ButtonPressed = EKeys::LeftMouseButton) override;

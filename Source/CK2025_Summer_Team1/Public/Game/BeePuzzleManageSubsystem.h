@@ -3,16 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/BeeStageInfoDataAsset.h"
 #include "Enumerations/BeeColorEnumerations.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "BeePuzzleManageSubsystem.generated.h"
 
+class ABeeBuildingMaterialsGenerator;
+class ABeePollenGenerator;
 class ABeeBuildingSlot;
 class ABeeBuildingMaterialBase;
 class UBeePuzzleObjectDataAsset;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBeeswaxPlacedOnBoard);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnColorMixed);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPuzzleFinished);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFadeStateChanged, const bool, bIsFadeIn);
 
 USTRUCT(BlueprintType)
@@ -73,6 +77,17 @@ public:
 		}
 	}
 
+	virtual FTransform GetSpawnPoint();
+	virtual UBeeStageInfoDataAsset* GetStageData();
+	virtual void ClearData();
+	
+public:
+	UFUNCTION()
+	virtual void RegisterPollenGenerator(ABeePollenGenerator* NewPollenGenerator);
+	
+	UFUNCTION()
+	virtual void RegisterBeeswaxGenerator(ABeeBuildingMaterialsGenerator* NewBeeswaxGenerator);
+	
 	UFUNCTION()
 	virtual void RegisterBuildingMaterialEventInfo(const FBeeBuildingMaterialEventInfo& EventInfo);
 
@@ -85,15 +100,28 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void CheckPuzzleColorIsMatching();
 	
+	UFUNCTION(BlueprintCallable)
+	void SetPollenCount();
+
 public:
 	FOnBeeswaxPlacedOnBoard OnBeeswaxPlacedOnBoard;
 	FOnColorMixed OnColorMixed;
+	FOnPuzzleFinished OnPuzzleFinished;
 	FOnFadeStateChanged OnFadeStateChanged;
 	
 protected:
 	UPROPERTY()
+	TArray<ABeePollenGenerator*> PollenGenerators;
+
+	UPROPERTY()
+	TObjectPtr<ABeeBuildingMaterialsGenerator> BeeswaxGenerator;
+	
+	UPROPERTY()
 	TObjectPtr<UBeePuzzleObjectDataAsset> PuzzleDataAsset;
 
+	UPROPERTY()
+	TObjectPtr<UBeeStageInfoDataAsset> StageInfoDataAsset;
+	
 	UPROPERTY()
 	TArray<ABeeBuildingSlot*> PuzzleSlots;
 

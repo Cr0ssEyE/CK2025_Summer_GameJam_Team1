@@ -49,19 +49,19 @@ void UBeeGameInstance::SaveCurrentSaveGameData()
 {
 	if (IsValid(CurrentSaveGameData))
 	{
-		FString CurrentLevelName = UGameplayStatics::GetCurrentLevelName(GetWorld());
-		// 핫-하 하드코딩 빔
-		if (CurrentLevelName != LEVEL_NAME_STAGE_ONE &&
-			CurrentLevelName != LEVEL_NAME_STAGE_TWO &&
-			CurrentLevelName != LEVEL_NAME_STAGE_THREE &&
-			CurrentLevelName != LEVEL_NAME_STAGE_FOUR &&
-			CurrentLevelName != LEVEL_NAME_STAGE_FIVE
-			)
-		{
-			CurrentSaveGameData->MaxClearedStageNumber = LastClearedStageNumber;
-		}
-		
-		CurrentSaveGameData->LastClearedStageNumber = LastClearedStageNumber;
+		// FString CurrentLevelName = UGameplayStatics::GetCurrentLevelName(GetWorld());
+		// // 핫-하 하드코딩 빔
+		// if (CurrentLevelName != LEVEL_NAME_STAGE_ONE &&
+		// 	CurrentLevelName != LEVEL_NAME_STAGE_TWO &&
+		// 	CurrentLevelName != LEVEL_NAME_STAGE_THREE &&
+		// 	CurrentLevelName != LEVEL_NAME_STAGE_FOUR &&
+		// 	CurrentLevelName != LEVEL_NAME_STAGE_FIVE
+		// 	)
+		// {
+		// 	CurrentSaveGameData->MaxClearedStageNumber = CurrentSaveGameData->LastClearedStageNumber;
+		// }
+		// 
+		// CurrentSaveGameData->LastClearedStageNumber = LastClearedStageNumber;
 		
 		UGameplayStatics::SaveGameToSlot(CurrentSaveGameData,DEFAULT_FILE_NAME, DEFAULT_FILE_INDEX);
 	}

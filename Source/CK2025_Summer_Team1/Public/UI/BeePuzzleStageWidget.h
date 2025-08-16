@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "BeePuzzleStageWidget.generated.h"
 
+class UBeeStoryWidget;
 class UBeeSubMenuWidget;
 /**
  * 
@@ -29,6 +30,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void UndoLastAction();
 
+	UFUNCTION()
+	void OnPuzzleFinished();
+	
 protected:
 	UFUNCTION(BlueprintCallable)
 	void OnColorMixed();
@@ -45,4 +49,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
 	TObjectPtr<UBeeSubMenuWidget> SubMenuWidget;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UBeeStoryWidget> StoryWidget;
 };

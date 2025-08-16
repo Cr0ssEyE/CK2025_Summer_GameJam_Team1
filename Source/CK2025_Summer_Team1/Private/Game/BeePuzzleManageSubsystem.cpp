@@ -6,9 +6,12 @@
 #include "Constant/BeeAssetLocations.h"
 #include "Constant/BeeCollisionNames.h"
 #include "Data/BeePuzzleObjectDataAsset.h"
+#include "Game/BeeBuildingMaterialsGenerator.h"
+#include "Game/BeeGameInstance.h"
 #include "Object/BeeBuildingMaterialBase.h"
 #include "Object/BeeBuildingMaterialBeeswax.h"
 #include "Object/BeeBuildingSlot.h"
+#include "Object/BeePollenGenerator.h"
 #include "Util/BeeConstructorHelper.h"
 
 UBeePuzzleManageSubsystem::UBeePuzzleManageSubsystem()
@@ -27,6 +30,48 @@ void UBeePuzzleManageSubsystem::Deinitialize()
 	Super::Deinitialize();
 }
 
+FTransform UBeePuzzleManageSubsystem::GetSpawnPoint()
+{
+	if (BeeswaxGenerator)
+	{
+		return BeeswaxGenerator->GetRandomSpawnPointLocation();
+	}
+	return FTransform::Identity;
+}
+
+UBeeStageInfoDataAsset* UBeePuzzleManageSubsystem::GetStageData()
+{
+	if (BeeswaxGenerator)
+	{
+		return StageInfoDataAsset;
+	}
+
+	return nullptr;
+}
+
+void UBeePuzzleManageSubsystem::ClearData()
+{
+	PollenGenerators.Empty();
+	BeeswaxGenerator = nullptr;
+}
+
+void UBeePuzzleManageSubsystem::RegisterPollenGenerator(ABeePollenGenerator* NewPollenGenerator)
+{
+	if (NewPollenGenerator)
+	{
+		PollenGenerators.Add(NewPollenGenerator);
+	}
+}
+
+void UBeePuzzleManageSubsystem::RegisterBeeswaxGenerator(ABeeBuildingMaterialsGenerator* NewBeeswaxGenerator)
+{
+	if (NewBeeswaxGenerator)
+	{
+		BeeswaxGenerator = NewBeeswaxGenerator;
+		StageInfoDataAsset = BeeswaxGenerator->GetStageInfoDataAsset();
+	}
+}
+
 void UBeePuzzleManageSubsystem::RegisterBuildingMaterialEventInfo(const FBeeBuildingMaterialEventInfo& EventInfo)
 {
 	if (IsValid(EventInfo.EffectedBuildingMaterial) && IsValid(EventInfo.RemovedBuildingMaterial))
@@ -35,8 +80,7 @@ void UBeePuzzleManageSubsystem::RegisterBuildingMaterialEventInfo(const FBeeBuil
 	}
 }
 
-void UBeePuzzleManageSubsystem::ChangeBuildingMaterialColor(ABeeBuildingMaterialBase* BuildingMaterial,
-                                                            const EBuildingMaterialBaseColor NewColor)
+void UBeePuzzleManageSubsystem::ChangeBuildingMaterialColor(ABeeBuildingMaterialBase* BuildingMaterial, const EBuildingMaterialBaseColor NewColor)
 {
 	FColor NewMaterialColor = FColor::Magenta;
 	switch (NewColor)
@@ -161,4 +205,23 @@ void UBeePuzzleManageSubsystem::CheckPuzzleColorIsMatching()
 
 	//TODO: 클리어 관련 처리 필요
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("All puzzle pieces are matched!"), false, FVector2D(3.f, 3.f));
+	UBeeGameInstance* GameInstance = GetWorld()->GetGameInstanceChecked<UBeeGameInstance>();
+	GameInstance->SetLastClearedStageNumber(GameInstance->GetCurrentPlayingStageNumber());
+	PollenGenerators.Empty();
+	BeeswaxGenerator = nullptr;
+	OnPuzzleFinished.Broadcast();
+}
+
+void UBeePuzzleManageSubsystem::SetPollenCount()
+{
+	for (auto PollenGenerator : PollenGenerators)
+	{
+		if ((PollenGenerator->GetPollenColorEnum() == EBuildingMaterialBaseColor::Black || PollenGenerator->GetPollenColorEnum() == EBuildingMaterialBaseColor::White) && !StageInfoDataAsset->bUseBlackAndWhiteColor)
+		{
+			continue;
+		}
+
+		PollenGenerator->SetActorHiddenInGame(false);
+		PollenGenerator->SetPollenCount(StageInfoDataAsset->PollenColorCount);
+	}
 }

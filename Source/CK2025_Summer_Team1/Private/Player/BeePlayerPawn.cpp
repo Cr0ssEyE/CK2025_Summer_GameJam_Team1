@@ -28,6 +28,8 @@ ABeePlayerPawn::ABeePlayerPawn()
 		CameraArm->TargetArmLength = PlayerDataAsset->PlayerCameraDistance;
 		CameraArm->TargetOffset = FVector(0.f, 0.f, PlayerDataAsset->PlayerCameraDistance);
 		Camera->SetRelativeRotation(PlayerDataAsset->PlayerCameraRotation);
+		Camera->SetProjectionMode(ECameraProjectionMode::Orthographic);
+		Camera->SetOrthoWidth(1000.f);
 	}
 	else
 	{

@@ -10,6 +10,7 @@
 #include "Game/BeeGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/BeeExitCheckWidget.h"
+#include "Util/BeeSaveGameData.h"
 
 void UBeeStoryWidget::NativeConstruct()
 {
@@ -26,7 +27,7 @@ void UBeeStoryWidget::NativeConstruct()
 	bIsIntroStory = false;
 }
 
-void UBeeStoryWidget::SetCurrentStoryType(int32 StageNumber)
+void UBeeStoryWidget::SetCurrentStoryType(int32 StageNumber, bool IsPuzzleStage)
 {
 	bIsIntroStory = UGameplayStatics::GetCurrentLevelName(GetWorld()) == LEVEL_NAME_STAGE_MENU;
 	const int32 CurrentStageNumber = StageNumber;
@@ -41,9 +42,9 @@ void UBeeStoryWidget::SetCurrentStoryType(int32 StageNumber)
 			continue;
 		}
 
-		if (LoadedStringData->IsClearStory && bIsIntroStory)
+		if ((!LoadedStringData->IsClearStory && IsPuzzleStage) || (LoadedStringData->IsClearStory && !IsPuzzleStage))
 		{
-			break;
+			continue;
 		}
 		
 		DialogueTextData.Add(LoadedStringData);
@@ -69,8 +70,18 @@ void UBeeStoryWidget::OnTextDisplayEventBtnClicked()
 void UBeeStoryWidget::OnFadeOutComplete()
 {
 	GetWorld()->GetTimerManager().ClearTimer(DialogueTextDisplayingHandle);
+	// = 퍼즐 스테이지
 	if (UGameplayStatics::GetCurrentLevelName(GetWorld()) != LEVEL_NAME_STAGE_MENU)
 	{
+		UBeeGameInstance * GameInstance = GetWorld()->GetGameInstanceChecked<UBeeGameInstance>();
+		UBeeSaveGameData* SaveGameData = GameInstance->GetCurrentSaveGameData();
+		SaveGameData->LastClearedStageNumber = GameInstance->GetCurrentPlayingStageNumber();
+		if (SaveGameData->MaxClearedStageNumber < GameInstance->GetCurrentPlayingStageNumber())
+		{
+			SaveGameData->MaxClearedStageNumber = GameInstance->GetCurrentPlayingStageNumber();
+			GameInstance->SaveCurrentSaveGameData();
+		}
+		
 		UGameplayStatics::OpenLevel(GetWorld(), LEVEL_NAME_STAGE_MENU);
 	}
 }

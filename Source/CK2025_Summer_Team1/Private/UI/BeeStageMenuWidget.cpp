@@ -3,7 +3,9 @@
 
 #include "UI/BeeStageMenuWidget.h"
 
+#include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/Button.h"
+#include "Components/CanvasPanelSlot.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Game/BeeGameInstance.h"
@@ -30,7 +32,8 @@ void UBeeStageMenuWidget::NativeConstruct()
 	StageEnterBtn->SetVisibility(ESlateVisibility::Hidden);
 	TArray<UButton*> StageButtons = { StageOneBtn, StageTwoBtn, StageThreeBtn, StageFourBtn, StageFiveBtn };
 	TArray<UImage*> StageBuildingImages = { StageOneBuildingImage, StageTwoBuildingImage, StageThreeBuildingImage, StageFourBuildingImage, StageFiveBuildingImage };
-	for (int i = 5; i > GameInstance->GetLastClearedStageNumber(); --i)
+	int32 MaxClearedStageNumber = GameInstance->GetCurrentSaveGameData()->MaxClearedStageNumber;
+	for (int i = 5; i > MaxClearedStageNumber + 1; --i)
 	{
 		if (i != 1)
 		{
@@ -44,10 +47,13 @@ void UBeeStageMenuWidget::NativeConstruct()
 			StageButtons[i - 1]->SetStyle(ButtonStyle);
 			StageButtons[i - 1]->SetIsEnabled(false);
 		}
-		
-		StageBuildingImages[i - 1]->SetVisibility(ESlateVisibility::Hidden);
 	}
 
+	for (int i = 5; i > MaxClearedStageNumber; --i)
+	{
+		StageBuildingImages[i - 1]->SetVisibility(ESlateVisibility::Hidden);
+	}
+	
 	StoryWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 
@@ -142,50 +148,46 @@ void UBeeStageMenuWidget::OnStageOneBtnClicked()
 {
 	SelectedStageNumber = 1;
 	StageEnterBtn->SetVisibility(ESlateVisibility::Visible);
-	FWidgetTransform BaseTransform = StageOneBtn->GetRenderTransform();
-	BaseTransform.Translation -= FVector2D(0.0f, 50.0f);
-	StageEnterBtn->SetRenderTransform(BaseTransform);
+	FVector2D NewPosition = UWidgetLayoutLibrary::SlotAsCanvasSlot(StageOneBtn)->GetPosition() - FVector2D(0.0f, 100.0f);
+	UWidgetLayoutLibrary::SlotAsCanvasSlot(StageEnterBtn)->SetPosition(NewPosition);
 }
 
 void UBeeStageMenuWidget::OnStageTwoBtnClicked()
 {
 	SelectedStageNumber = 2;
 	StageEnterBtn->SetVisibility(ESlateVisibility::Visible);
-	FWidgetTransform BaseTransform = StageTwoBtn->GetRenderTransform();
-	BaseTransform.Translation -= FVector2D(0.0f, 50.0f);
-	StageEnterBtn->SetRenderTransform(BaseTransform);
+	FVector2D NewPosition = UWidgetLayoutLibrary::SlotAsCanvasSlot(StageTwoBtn)->GetPosition() - FVector2D(0.0f, 100.0f);
+	UWidgetLayoutLibrary::SlotAsCanvasSlot(StageEnterBtn)->SetPosition(NewPosition);
 }
 
 void UBeeStageMenuWidget::OnStageThreeBtnClicked()
 {
 	SelectedStageNumber = 3;
 	StageEnterBtn->SetVisibility(ESlateVisibility::Visible);
-	FWidgetTransform BaseTransform = StageThreeBtn->GetRenderTransform();
-	BaseTransform.Translation -= FVector2D(0.0f, 50.0f);
-	StageEnterBtn->SetRenderTransform(BaseTransform);
+	FVector2D NewPosition = UWidgetLayoutLibrary::SlotAsCanvasSlot(StageThreeBtn)->GetPosition() - FVector2D(0.0f, 100.0f);
+	UWidgetLayoutLibrary::SlotAsCanvasSlot(StageEnterBtn)->SetPosition(NewPosition);
 }
 
 void UBeeStageMenuWidget::OnStageFourBtnClicked()
 {
 	SelectedStageNumber = 4;
 	StageEnterBtn->SetVisibility(ESlateVisibility::Visible);
-	FWidgetTransform BaseTransform = StageFourBtn->GetRenderTransform();
-	BaseTransform.Translation -= FVector2D(0.0f, 50.0f);
-	StageEnterBtn->SetRenderTransform(BaseTransform);
+	FVector2D NewPosition = UWidgetLayoutLibrary::SlotAsCanvasSlot(StageFourBtn)->GetPosition() - FVector2D(0.0f, 100.0f);
+	UWidgetLayoutLibrary::SlotAsCanvasSlot(StageEnterBtn)->SetPosition(NewPosition);
 }
 
 void UBeeStageMenuWidget::OnStageFiveBtnClicked()
 {
 	SelectedStageNumber = 5;
 	StageEnterBtn->SetVisibility(ESlateVisibility::Visible);
-	FWidgetTransform BaseTransform = StageFiveBtn->GetRenderTransform();
-	BaseTransform.Translation -= FVector2D(0.0f, 50.0f);
-	StageEnterBtn->SetRenderTransform(BaseTransform);
+	FVector2D NewPosition = UWidgetLayoutLibrary::SlotAsCanvasSlot(StageFiveBtn)->GetPosition() - FVector2D(0.0f, 100.0f);
+	UWidgetLayoutLibrary::SlotAsCanvasSlot(StageEnterBtn)->SetPosition(NewPosition);
 }
 
 void UBeeStageMenuWidget::EnterSelectedStage()
 {
-	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->SetCurrentPlayingStageNumber(SelectedStageNumber);
+	UBeeGameInstance* GameInstance = GetWorld()->GetGameInstanceChecked<UBeeGameInstance>();
+	GameInstance->SetCurrentPlayingStageNumber(SelectedStageNumber);
 	switch (SelectedStageNumber)
 	{
 		case 1:
