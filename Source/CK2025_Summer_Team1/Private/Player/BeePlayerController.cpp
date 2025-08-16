@@ -28,14 +28,19 @@ ABeePlayerController::ABeePlayerController()
 		ObjectSnapRange = PlayerDataAsset->ObjectSnapRange;
 	}
 
+	FadeManageWidgetClass = FBeeConstructorHelper::FindAndGetClass<UBeeFadeManageWidget>(LOCATION_FADE_WIDGET);
+	
 	bIsObjectPickup = false;
 }
 
 void ABeePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->OnPlayerSpawn();
+	FadeManageWidget = CreateWidget<UBeeFadeManageWidget>(GetWorld(), FadeManageWidgetClass);
+	FadeManageWidget->AddToViewport(999);
+	FadeManageWidget->BeginFadeIn();
+	
+	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->OnPlayerSpawn(*FadeManageWidget);
 }
 
 void ABeePlayerController::SetupInputComponent()

@@ -6,6 +6,14 @@
 #include "Engine/DataTable.h"
 #include "BeeStringDataTable.generated.h"
 
+UENUM(BlueprintType)
+enum class ESpeakerTypes : uint8
+{
+	Player UMETA(DisplayName = "Player"),
+	NPC UMETA(DisplayName = "NPC"),
+	Other UMETA(DisplayName = "Other")
+};
+
 USTRUCT(BlueprintType)
 struct FStringDataTable : public FTableRowBase
 {
@@ -13,12 +21,12 @@ struct FStringDataTable : public FTableRowBase
 
 public:
 	FStringDataTable() :
-	StageNumber(0),
-	IsPlayer(true),
-	Speaker(""),
-	Words("")
+		StageNumber(0),
+		IsClearStory(false),
+		SpeakerType(ESpeakerTypes::Other),
+		Speaker(""),
+		Words("")
 	{
-		
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", DisplayName = "스테이지 번호")
@@ -27,8 +35,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", DisplayName = "클리어 여부")
 	bool IsClearStory;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", DisplayName = "플레이어 텍스트 여부")
-	bool IsPlayer;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", DisplayName = "화자 유형")
+	ESpeakerTypes SpeakerType;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", DisplayName = "화자")
 	FString Speaker;

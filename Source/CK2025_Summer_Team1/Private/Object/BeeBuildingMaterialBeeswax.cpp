@@ -42,6 +42,31 @@ void ABeeBuildingMaterialBeeswax::NotifyActorOnClicked(FKey ButtonPressed)
 void ABeeBuildingMaterialBeeswax::NotifyActorOnReleased(FKey ButtonReleased)
 {
 	Super::NotifyActorOnReleased(ButtonReleased);
+
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+	
+	for (const UBeePuzzlePieceComponent* PuzzlePiece : PuzzlePieces)
+	{
+		FVector Start = PuzzlePiece->GetComponentLocation();
+		FVector End = Start - FVector(0.f, 0.f, 1000.f);
+
+		bool bHit = GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			Start,
+			End,
+			ECC_TRACE_PUZZLE_OBJECT,
+			CollisionParams
+		);
+		DrawDebugLine(GetWorld(), Start, End, bHit ? FColor::Yellow : FColor::Yellow, false, 0.1f, 0, 1.0f);
+		if (bHit && Cast<ABeeBuildingMaterialBeeswax>(HitResult.GetActor()))
+		{
+			SetActorLocation(LastPlacedPoint);
+			return;
+		}
+	}
+	
 	if (!TrySnapPuzzlePieceToPlace() && PuzzleMatchingCount > 0)
 	{
 		SetActorLocation(LastPlacedPoint);
@@ -73,20 +98,6 @@ void ABeeBuildingMaterialBeeswax::CheckPuzzlePieceCanSnapToPlace()
 			HitResult,
 			Start,
 			End,
-			ECC_TRACE_PUZZLE_OBJECT,
-			CollisionParams
-		);
-		DrawDebugLine(GetWorld(), Start, End, bHit ? FColor::Yellow : FColor::Yellow, false, 0.1f, 0, 1.0f);
-		if (bHit)
-		{
-			SetActorLocation(LastPlacedPoint);
-			return;
-		}
-		
-		bHit = GetWorld()->LineTraceSingleByChannel(
-			HitResult,
-			Start,
-			End,
 			ECC_TRACE_PUZZLE_SLOT_OBJECT,
 			CollisionParams
 		);
@@ -94,7 +105,6 @@ void ABeeBuildingMaterialBeeswax::CheckPuzzlePieceCanSnapToPlace()
 		if (bHit)
 		{
 			PuzzleMatchingCount++;
-			continue;
 		}
 	}
 	

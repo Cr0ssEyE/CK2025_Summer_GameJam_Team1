@@ -50,12 +50,11 @@ void UBeeFadeManageWidget::OnAnimationFinished_Implementation(const UWidgetAnima
 	{
 		GameInstance->FadeWidgetFadeInCompleteEvent.Broadcast();
 		GameInstance->OnFadeComplete();
+		SetVisibility(ESlateVisibility::Hidden);
 	}
 	else if (Animation == FadeOutAnimation)
 	{
 		GameInstance->FadeWidgetFadeOutCompleteEvent.Broadcast();
 		GameInstance->OnFadeComplete();
 	}
-
-	SetVisibility(ESlateVisibility::Hidden);
 }

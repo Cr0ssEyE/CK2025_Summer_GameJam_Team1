@@ -44,10 +44,6 @@ protected:
 	void OnFadeOutComplete();
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
-	TObjectPtr<UBeeSubMenuWidget> SubMenuWidget;
-
-protected:
 	UFUNCTION(BlueprintCallable)
 	void OnStageEnterBtnClicked();
 	
@@ -164,7 +160,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
 	TObjectPtr<UBeeStoryWidget> StoryWidget;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UBeeSubMenuWidget> SubMenuWidget;
+
 protected:
 	uint32 SelectedStageNumber;
 };

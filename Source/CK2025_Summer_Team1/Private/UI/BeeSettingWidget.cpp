@@ -66,8 +66,7 @@ void UBeeSettingWidget::NativeConstruct()
 
 void UBeeSettingWidget::CloseSettingWidget()
 {
-	SetRenderScale(FVector2d::Zero());
-	SetIsEnabled(false);
+	SetVisibility(ESlateVisibility::Hidden);
 	GEngine->GetGameUserSettings()->ApplySettings(true);
 }
 

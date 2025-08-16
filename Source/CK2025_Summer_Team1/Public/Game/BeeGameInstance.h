@@ -27,7 +27,7 @@ public:
 	virtual void Init() override;
 	virtual void Shutdown() override;
 	virtual void OnWorldChanged(UWorld* OldWorld, UWorld* NewWorld) override;
-
+	
 public:
 	FORCEINLINE void FadeIn() { FadeManageWidget->BeginFadeIn(); bIsFadeOnGoing = true; }
 	FORCEINLINE void FadeOut() { FadeManageWidget->BeginFadeOut(); bIsFadeOnGoing = true; }
@@ -51,7 +51,7 @@ public:
 	
 	void CreateDefaultSaveSlot();
 
-	void OnPlayerSpawn();
+	void OnPlayerSpawn(UBeeFadeManageWidget& PlayerFadeWidget);
 	
 private:
 	UPROPERTY()
@@ -60,9 +60,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<UBeeFadeManageWidget> FadeManageWidget;
 	
-	UPROPERTY()
-	TSubclassOf<UBeeFadeManageWidget> FadeManageWidgetClass;
-
 	UPROPERTY()
 	int32 CurrentPlayingStageNumber;
 	

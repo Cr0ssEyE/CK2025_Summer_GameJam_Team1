@@ -3,18 +3,16 @@
 
 #include "Game/BeeGameInstance.h"
 
-#include "Blueprint/UserWidget.h"
 #include "Constant/BeeAssetLocations.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/BeeFadeManageWidget.h"
-#include "Util/BeeConstructorHelper.h"
 #include "Util/BeeSaveGameData.h"
 
 UBeeGameInstance::UBeeGameInstance():
 CurrentPlayingStageNumber(0),
 LastClearedStageNumber(0)
 {
-	FadeManageWidgetClass = FBeeConstructorHelper::FindAndGetClass<UBeeFadeManageWidget>(LOCATION_FADE_WIDGET);
+	
 }
 
 void UBeeGameInstance::Init()
@@ -44,7 +42,7 @@ void UBeeGameInstance::Shutdown()
 void UBeeGameInstance::OnWorldChanged(UWorld* OldWorld, UWorld* NewWorld)
 {
 	Super::OnWorldChanged(OldWorld, NewWorld);
-	
+
 }
 
 void UBeeGameInstance::SaveCurrentSaveGameData()
@@ -80,13 +78,8 @@ void UBeeGameInstance::CreateDefaultSaveSlot()
 	CurrentSaveGameData = NewData;
 }
 
-void UBeeGameInstance::OnPlayerSpawn()
+void UBeeGameInstance::OnPlayerSpawn(UBeeFadeManageWidget& PlayerFadeWidget)
 {
 	Init();
-	FadeManageWidget = CreateWidget<UBeeFadeManageWidget>(GetWorld(), FadeManageWidgetClass);
-	if (FadeManageWidget)
-	{
-		FadeManageWidget->AddToViewport(999);
-		FadeManageWidget->BeginFadeIn();
-	}
+	FadeManageWidget = PlayerFadeWidget;
 }

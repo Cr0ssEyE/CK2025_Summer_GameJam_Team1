@@ -36,6 +36,12 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	void OnSettingBtnClicked();
+		
+	UFUNCTION(BlueprintCallable)
+	void OnExitCheckConfirmed();
+	
+	UFUNCTION(BlueprintCallable)
+	void OnExitCheckCanceled();
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))

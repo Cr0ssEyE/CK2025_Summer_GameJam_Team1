@@ -7,6 +7,7 @@
 #include "Data/BeeStringDataTable.h"
 #include "BeeStoryWidget.generated.h"
 
+class UBeeStoryResourceDataAsset;
 class UBeeExitCheckWidget;
 class UImage;
 class UTextBlock;
@@ -85,6 +86,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
 	TObjectPtr<UBeeExitCheckWidget> ExitCheckWidget;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", DisplayName = "스토리 캐릭터 일러스트 데이터 에셋")
+	TObjectPtr<const UBeeStoryResourceDataAsset> StoryResourceDataAsset;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", DisplayName = "스토리 텍스트 데이터 테이블")
 	TObjectPtr<const UDataTable> DialogueTextDataTable;
 	

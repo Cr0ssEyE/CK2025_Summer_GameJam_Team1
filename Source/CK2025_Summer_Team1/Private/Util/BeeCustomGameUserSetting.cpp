@@ -5,14 +5,20 @@
 
 UBeeCustomGameUserSetting::UBeeCustomGameUserSetting(const FObjectInitializer& ObjectInitializer):
 	MasterSoundVolume(1),
-	bMasterSoundIgnore(false)
+	bMasterSoundIgnore(false),
+	DisplayResolution("HD(1280×720)")
 {
 	FrameRateLimit = 60.f;
 }
 
 UBeeCustomGameUserSetting* UBeeCustomGameUserSetting::GetCustomGameUserSettings()
 {
-	return CastChecked<UBeeCustomGameUserSetting>(GEngine->GetGameUserSettings());
+	UBeeCustomGameUserSetting* CustomGameUserSettings = Cast<UBeeCustomGameUserSetting>(GEngine->GetGameUserSettings());
+	if (CustomGameUserSettings)
+	{
+		return CustomGameUserSettings;
+	}
+	return Cast<UBeeCustomGameUserSetting>( GetGameUserSettings());
 }
 
 void UBeeCustomGameUserSetting::ApplySettings(bool bCheckForCommandLineOverrides)

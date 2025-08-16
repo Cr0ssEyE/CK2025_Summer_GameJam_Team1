@@ -7,7 +7,7 @@
 #include "Components/Button.h"
 #include "BeeExitCheckWidget.generated.h"
 
-class FOnButtonClickedEvent;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnButtonClickEvent);
 
 /**
  * 
@@ -20,9 +20,16 @@ class CK2025_SUMMER_TEAM1_API UBeeExitCheckWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
-	FOnButtonClickedEvent GetConfirmButtonClickedEvent() const { return ConfirmBtn->OnClicked; }
-	FOnButtonClickedEvent GetCancelButtonClickedEvent() const { return CancelBtn->OnClicked; }
+	FOnButtonClickEvent ConfirmButtonClickedEvent;
+	FOnButtonClickEvent CancelButtonClickedEvent;
+	
+protected:
+	UFUNCTION(BlueprintCallable)
+	void OnConfirmButtonClicked();
 
+	UFUNCTION(BlueprintCallable)
+	void OnCancelButtonClicked();
+	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
 	TObjectPtr<UButton> ConfirmBtn;

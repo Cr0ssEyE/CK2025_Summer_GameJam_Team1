@@ -143,7 +143,7 @@ void UBeeStageMenuWidget::OnStageOneBtnClicked()
 	SelectedStageNumber = 1;
 	StageEnterBtn->SetVisibility(ESlateVisibility::Visible);
 	FWidgetTransform BaseTransform = StageOneBtn->GetRenderTransform();
-	BaseTransform.Translation += FVector2D(0.0f, 100.0f);
+	BaseTransform.Translation -= FVector2D(0.0f, 50.0f);
 	StageEnterBtn->SetRenderTransform(BaseTransform);
 }
 
@@ -152,7 +152,7 @@ void UBeeStageMenuWidget::OnStageTwoBtnClicked()
 	SelectedStageNumber = 2;
 	StageEnterBtn->SetVisibility(ESlateVisibility::Visible);
 	FWidgetTransform BaseTransform = StageTwoBtn->GetRenderTransform();
-	BaseTransform.Translation += FVector2D(0.0f, 100.0f);
+	BaseTransform.Translation -= FVector2D(0.0f, 50.0f);
 	StageEnterBtn->SetRenderTransform(BaseTransform);
 }
 
@@ -161,7 +161,7 @@ void UBeeStageMenuWidget::OnStageThreeBtnClicked()
 	SelectedStageNumber = 3;
 	StageEnterBtn->SetVisibility(ESlateVisibility::Visible);
 	FWidgetTransform BaseTransform = StageThreeBtn->GetRenderTransform();
-	BaseTransform.Translation += FVector2D(0.0f, 100.0f);
+	BaseTransform.Translation -= FVector2D(0.0f, 50.0f);
 	StageEnterBtn->SetRenderTransform(BaseTransform);
 }
 
@@ -170,7 +170,7 @@ void UBeeStageMenuWidget::OnStageFourBtnClicked()
 	SelectedStageNumber = 4;
 	StageEnterBtn->SetVisibility(ESlateVisibility::Visible);
 	FWidgetTransform BaseTransform = StageFourBtn->GetRenderTransform();
-	BaseTransform.Translation += FVector2D(0.0f, 100.0f);
+	BaseTransform.Translation -= FVector2D(0.0f, 50.0f);
 	StageEnterBtn->SetRenderTransform(BaseTransform);
 }
 
@@ -179,7 +179,7 @@ void UBeeStageMenuWidget::OnStageFiveBtnClicked()
 	SelectedStageNumber = 5;
 	StageEnterBtn->SetVisibility(ESlateVisibility::Visible);
 	FWidgetTransform BaseTransform = StageFiveBtn->GetRenderTransform();
-	BaseTransform.Translation += FVector2D(0.0f, 100.0f);
+	BaseTransform.Translation -= FVector2D(0.0f, 50.0f);
 	StageEnterBtn->SetRenderTransform(BaseTransform);
 }
 

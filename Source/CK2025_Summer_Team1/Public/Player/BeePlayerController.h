@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "BeePlayerController.generated.h"
 
+class UBeeFadeManageWidget;
 class ABeeBuildingMaterialBase;
 struct FInputActionValue;
 class UInputAction;
@@ -56,4 +57,11 @@ protected:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TWeakObjectPtr<ABeeBuildingMaterialBase> PickUpObject;
+
+protected:
+	UPROPERTY()
+	TObjectPtr<UBeeFadeManageWidget> FadeManageWidget;
+	
+	UPROPERTY()
+	TSubclassOf<UBeeFadeManageWidget> FadeManageWidgetClass;
 };

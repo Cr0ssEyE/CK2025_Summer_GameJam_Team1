@@ -26,8 +26,8 @@ void UBeeLobbyWidget::NativeConstruct()
 	ExitButton->SetVisibility(ESlateVisibility::Hidden);
 	ExitButton->SetIsEnabled(false);
 	
-	ExitCheckWidget->GetConfirmButtonClickedEvent().AddDynamic(this, &UBeeLobbyWidget::ExitGame);
-	ExitCheckWidget->GetCancelButtonClickedEvent().AddDynamic(this, &UBeeLobbyWidget::CloseExitCheckWidget);
+	ExitCheckWidget->ConfirmButtonClickedEvent.AddDynamic(this, &UBeeLobbyWidget::ExitGame);
+	ExitCheckWidget->CancelButtonClickedEvent.AddDynamic(this, &UBeeLobbyWidget::CloseExitCheckWidget);
 	ExitCheckWidget->SetVisibility(ESlateVisibility::Hidden);
 	ExitCheckWidget->SetIsEnabled(false);
 }
@@ -35,6 +35,7 @@ void UBeeLobbyWidget::NativeConstruct()
 void UBeeLobbyWidget::OnFadeInComplete()
 {
 	StartButton->SetIsEnabled(true);
+	StartButton->SetVisibility(ESlateVisibility::Visible);
 	ExitButton->SetIsEnabled(true);
 	ExitButton->SetVisibility(ESlateVisibility::Visible);
 }
@@ -63,5 +64,5 @@ void UBeeLobbyWidget::CloseExitCheckWidget()
 
 void UBeeLobbyWidget::ExitGame()
 {
-	UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, true);
+	UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
 }

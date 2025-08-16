@@ -6,6 +6,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Constant/BeeAssetLocations.h"
+#include "Data/BeeStoryResourceDataAsset.h"
 #include "Game/BeeGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/BeeExitCheckWidget.h"
@@ -16,17 +17,18 @@ void UBeeStoryWidget::NativeConstruct()
 	
 	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->FadeWidgetFadeOutCompleteEvent.AddDynamic(this, &UBeeStoryWidget::OnFadeOutComplete);
 	SkipBtn->OnClicked.AddDynamic(this, &UBeeStoryWidget::OnSkipButtonClicked);
-	ExitCheckWidget->GetConfirmButtonClickedEvent().AddDynamic(this, &UBeeStoryWidget::OnSkipButtonConfirmed);
-	ExitCheckWidget->GetCancelButtonClickedEvent().AddDynamic(this, &UBeeStoryWidget::OnSkipButtonCanceled);
+	ExitCheckWidget->ConfirmButtonClickedEvent.AddDynamic(this, &UBeeStoryWidget::OnSkipButtonConfirmed);
+	ExitCheckWidget->CancelButtonClickedEvent.AddDynamic(this, &UBeeStoryWidget::OnSkipButtonCanceled);
 	TextDisplayEventBtn->OnClicked.AddDynamic(this, &UBeeStoryWidget::OnTextDisplayEventBtnClicked);
 
+	ExitCheckWidget->SetVisibility(ESlateVisibility::Hidden);
 	ClickHintImage->SetVisibility(ESlateVisibility::Hidden);
 	bIsIntroStory = false;
 }
 
 void UBeeStoryWidget::SetCurrentStoryType(int32 StageNumber)
 {
-	bIsIntroStory = UGameplayStatics::GetCurrentLevelName(GetWorld()) == LEVEL_NAME_LOBBY;
+	bIsIntroStory = UGameplayStatics::GetCurrentLevelName(GetWorld()) == LEVEL_NAME_STAGE_MENU;
 	const int32 CurrentStageNumber = StageNumber;
 	
 	TArray<FStringDataTable*> LoadedStringDataArray;
@@ -41,12 +43,13 @@ void UBeeStoryWidget::SetCurrentStoryType(int32 StageNumber)
 
 		if (LoadedStringData->IsClearStory && bIsIntroStory)
 		{
-			return;
+			break;
 		}
 		
 		DialogueTextData.Add(LoadedStringData);
 	}
 
+	OtherCharacterImage->SetBrushFromTexture(StoryResourceDataAsset->StageCharactersTextures[StageNumber - 1]);
 	SetNextSpeaker();
 }
 
@@ -66,9 +69,9 @@ void UBeeStoryWidget::OnTextDisplayEventBtnClicked()
 void UBeeStoryWidget::OnFadeOutComplete()
 {
 	GetWorld()->GetTimerManager().ClearTimer(DialogueTextDisplayingHandle);
-	if (UGameplayStatics::GetCurrentLevelName(GetWorld()) == LEVEL_NAME_LOBBY)
+	if (UGameplayStatics::GetCurrentLevelName(GetWorld()) != LEVEL_NAME_STAGE_MENU)
 	{
-		UGameplayStatics::OpenLevel(GetWorld(), LEVEL_NAME_LOBBY);
+		UGameplayStatics::OpenLevel(GetWorld(), LEVEL_NAME_STAGE_MENU);
 	}
 }
 
@@ -110,17 +113,26 @@ void UBeeStoryWidget::SetNextSpeaker()
 	CurrentWordsIndex = 0;
 	
 	//TODO: 화자에 따라 캐랙터 배경 및 색상 변경
-	if (CurrentDialogueText->IsPlayer)
+	switch (CurrentDialogueText->SpeakerType)
 	{
+	case ESpeakerTypes::Player:
 		CharacterDialogueBackgroundImage->SetColorAndOpacity(PlayerCharacterDialogueOutlineColor);
 		PlayerCharacterImage->SetColorAndOpacity(FLinearColor::White);
-		OtherCharacterImage->SetColorAndOpacity(FLinearColor::Gray);
-	}
-	else
-	{
+		OtherCharacterImage->SetColorAndOpacity(FLinearColor(0.15f , 0.15f, 0.15f, 1.f));
+		break;
+	case ESpeakerTypes::NPC:
 		CharacterDialogueBackgroundImage->SetColorAndOpacity(OtherCharacterDialogueOutlineColor);
-		PlayerCharacterImage->SetColorAndOpacity(FLinearColor::Gray);
+		PlayerCharacterImage->SetColorAndOpacity(FLinearColor(0.15f , 0.15f, 0.15f, 1.f));
 		OtherCharacterImage->SetColorAndOpacity(FLinearColor::White);
+		break;
+	case ESpeakerTypes::Other:
+		CharacterDialogueBackgroundImage->SetColorAndOpacity(FLinearColor::Gray);
+		PlayerCharacterImage->SetColorAndOpacity(FLinearColor(0.15f , 0.15f, 0.15f, 1.f));
+		OtherCharacterImage->SetColorAndOpacity(FLinearColor(0.15f , 0.15f, 0.15f, 1.f));
+		break;
+	default:
+		checkNoEntry();
+		break;
 	}
 	
 	GetWorld()->GetTimerManager().SetTimer(DialogueTextDisplayingHandle, this, &UBeeStoryWidget::DisplayDialogueTextSequence, DialogueTextDisplayTick, true);
@@ -134,13 +146,14 @@ void UBeeStoryWidget::DisplayDialogueTextSequence()
 
 	if (CurrentDialogueTextString.Equals(CurrentDialogueText->Words))
 	{
-		GetWorld()->GetTimerManager().ClearTimer(DialogueTextDisplayingHandle);
-		ClickHintImage->SetVisibility(ESlateVisibility::Visible);
+		DisplayDialogueTextImmediately();
 	}
 }
 
 void UBeeStoryWidget::DisplayDialogueTextImmediately()
 {
-	 GetWorld()->GetTimerManager().ClearTimer(DialogueTextDisplayingHandle);
+	GetWorld()->GetTimerManager().ClearTimer(DialogueTextDisplayingHandle);
+	NextDialogueIndex++;
+	CharacterDialogueTextBlock->SetText(FText::FromString(CurrentDialogueText->Words));
 	ClickHintImage->SetVisibility(ESlateVisibility::Visible);
 }
