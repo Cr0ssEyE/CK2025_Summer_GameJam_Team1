@@ -5,11 +5,7 @@
 
 UBeeCustomGameUserSetting::UBeeCustomGameUserSetting(const FObjectInitializer& ObjectInitializer):
 	MasterSoundVolume(1),
-	BGMSoundVolume(1),
-	SFXSoundVolume(1),
-	bMasterSoundIgnore(false),
-	bBGMSoundIgnore(false),
-	bSFXSoundIgnore(false)
+	bMasterSoundIgnore(false)
 {
 	FrameRateLimit = 60.f;
 }

@@ -12,6 +12,7 @@ class ABeeBuildingMaterialBase;
 class UBeePuzzleObjectDataAsset;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBeeswaxPlacedOnBoard);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnColorMixed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFadeStateChanged, const bool, bIsFadeIn);
 
 USTRUCT(BlueprintType)
@@ -20,26 +21,30 @@ struct FBeeBuildingMaterialEventInfo
 	GENERATED_BODY()
 public:
 	FBeeBuildingMaterialEventInfo():
+	EffectedMaterialBeforeColorEnum(EBuildingMaterialBaseColor::None),
+	EffectedMaterialBeforeColor(FColor::White),
 	EffectedMaterialLastPlacedPoint(FVector::ZeroVector),
 	RemovedMaterialLastPlacedPoint(FVector::ZeroVector)
 	{
 		
 	}
+
 public:
 	UPROPERTY()
-	TWeakObjectPtr<ABeeBuildingMaterialBase> EffectedBuildingMaterial;
+	TObjectPtr<ABeeBuildingMaterialBase> EffectedBuildingMaterial;
 
 	UPROPERTY()
-	TWeakObjectPtr<ABeeBuildingMaterialBase> RemovedBuildingMaterial;
+	TObjectPtr<ABeeBuildingMaterialBase> RemovedBuildingMaterial;
 
+	EBuildingMaterialBaseColor EffectedMaterialBeforeColorEnum;
+
+	FColor EffectedMaterialBeforeColor;
+	
 	FVector EffectedMaterialLastPlacedPoint;
 
 	FVector RemovedMaterialLastPlacedPoint;
 };
 
-/**
- * 
- */
 UCLASS()
 class CK2025_SUMMER_TEAM1_API UBeePuzzleManageSubsystem : public UGameInstanceSubsystem
 {
@@ -69,13 +74,20 @@ public:
 	}
 
 	UFUNCTION()
+	virtual void RegisterBuildingMaterialEventInfo(const FBeeBuildingMaterialEventInfo& EventInfo);
+
+	UFUNCTION()
 	virtual void ChangeBuildingMaterialColor(ABeeBuildingMaterialBase* BuildingMaterial, const EBuildingMaterialBaseColor NewColor);
+
+	UFUNCTION()
+	virtual bool UndoBuildingMaterialColorMixAction();
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void CheckPuzzleColorIsMatching();
 	
 public:
 	FOnBeeswaxPlacedOnBoard OnBeeswaxPlacedOnBoard;
+	FOnColorMixed OnColorMixed;
 	FOnFadeStateChanged OnFadeStateChanged;
 	
 protected:
@@ -84,4 +96,7 @@ protected:
 
 	UPROPERTY()
 	TArray<ABeeBuildingSlot*> PuzzleSlots;
+
+	UPROPERTY()
+	TArray<FBeeBuildingMaterialEventInfo> BuildingMaterialEventInfos;
 };

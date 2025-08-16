@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "BeeStageMenuWidget.generated.h"
 
+class UBeeStoryWidget;
 class UBeeExitCheckWidget;
 class UBeeSubMenuWidget;
 class UTextBlock;
@@ -160,6 +161,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	FLinearColor DisabledStageTextColor;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
+	TObjectPtr<UBeeStoryWidget> StoryWidget;
 	
 protected:
 	uint32 SelectedStageNumber;

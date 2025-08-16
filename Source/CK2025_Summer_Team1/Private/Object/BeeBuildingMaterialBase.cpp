@@ -22,7 +22,9 @@ void ABeeBuildingMaterialBase::BeginPlay()
 
 void ABeeBuildingMaterialBase::SetBuildingMaterialColor(const EBuildingMaterialBaseColor NewColorEnum, FColor NewColor)
 {
-	BuildingMaterialColor = NewColorEnum;
+	BuildingMaterialColorEnum = NewColorEnum;
+	BuildingMaterialColor = NewColor;
+	
 	if (MeshComponent)
 	{
 		MeshComponent->SetColorParameterValueOnMaterials(PARAM_PUZZLE_OBJECT_COLOR, NewColor);

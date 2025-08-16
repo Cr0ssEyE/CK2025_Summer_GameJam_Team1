@@ -27,8 +27,16 @@ void UBeePuzzleManageSubsystem::Deinitialize()
 	Super::Deinitialize();
 }
 
+void UBeePuzzleManageSubsystem::RegisterBuildingMaterialEventInfo(const FBeeBuildingMaterialEventInfo& EventInfo)
+{
+	if (IsValid(EventInfo.EffectedBuildingMaterial) && IsValid(EventInfo.RemovedBuildingMaterial))
+	{
+		BuildingMaterialEventInfos.Push(EventInfo);
+	}
+}
+
 void UBeePuzzleManageSubsystem::ChangeBuildingMaterialColor(ABeeBuildingMaterialBase* BuildingMaterial,
-	const EBuildingMaterialBaseColor NewColor)
+                                                            const EBuildingMaterialBaseColor NewColor)
 {
 	FColor NewMaterialColor = FColor::Magenta;
 	switch (NewColor)
@@ -80,6 +88,33 @@ void UBeePuzzleManageSubsystem::ChangeBuildingMaterialColor(ABeeBuildingMaterial
 		break;
 	}
 	BuildingMaterial->SetBuildingMaterialColor(NewColor, NewMaterialColor);
+	OnColorMixed.Broadcast();
+}
+
+bool UBeePuzzleManageSubsystem::UndoBuildingMaterialColorMixAction()
+{
+	if (BuildingMaterialEventInfos.IsEmpty())
+	{
+		return false;
+	}
+	
+	FBeeBuildingMaterialEventInfo LastEventInfo = BuildingMaterialEventInfos.Pop();
+	
+	LastEventInfo.EffectedBuildingMaterial->SetActorLocation(LastEventInfo.EffectedMaterialLastPlacedPoint);
+	LastEventInfo.EffectedBuildingMaterial->SetBuildingMaterialColor(LastEventInfo.EffectedMaterialBeforeColorEnum, LastEventInfo.EffectedMaterialBeforeColor);
+	LastEventInfo.EffectedBuildingMaterial->SetLastPlacedPoint();
+	
+	LastEventInfo.RemovedBuildingMaterial->SetActorLocation(LastEventInfo.RemovedMaterialLastPlacedPoint);
+	LastEventInfo.RemovedBuildingMaterial->SetActorHiddenInGame(false);
+	LastEventInfo.RemovedBuildingMaterial->SetActorEnableCollision(true);
+	LastEventInfo.RemovedBuildingMaterial->SetLastPlacedPoint();
+
+	if (BuildingMaterialEventInfos.IsEmpty())
+	{
+		return false;
+	}
+	
+	return true;
 }
 
 void UBeePuzzleManageSubsystem::CheckPuzzleColorIsMatching()
@@ -118,7 +153,7 @@ void UBeePuzzleManageSubsystem::CheckPuzzleColorIsMatching()
 			return;
 		}
 
-		if (BeeswaxObject->GetBuildingMaterialColor() != PuzzleSlot->GetRequiredPieceColor())
+		if (BeeswaxObject->GetBuildingMaterialColorEnum() != PuzzleSlot->GetRequiredPieceColor())
 		{
 			return;
 		}

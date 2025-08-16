@@ -8,6 +8,7 @@
 #include "Components/TextBlock.h"
 #include "Game/BeeGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/BeeStoryWidget.h"
 #include "UI/BeeSubMenuWidget.h"
 #include "Util/BeeSaveGameData.h"
 
@@ -46,6 +47,8 @@ void UBeeStageMenuWidget::NativeConstruct()
 		
 		StageBuildingImages[i - 1]->SetVisibility(ESlateVisibility::Hidden);
 	}
+
+	StoryWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 
 FReply UBeeStageMenuWidget::NativeOnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
@@ -131,7 +134,8 @@ void UBeeStageMenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimat
 void UBeeStageMenuWidget::OnStageEnterBtnClicked()
 {
 	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->FadeWidgetFadeOutCompleteEvent.AddDynamic(this, &UBeeStageMenuWidget::EnterSelectedStage);
-	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->FadeOut();
+	StoryWidget->SetVisibility(ESlateVisibility::Visible);
+	StoryWidget->SetCurrentStoryType(SelectedStageNumber);
 }
 
 void UBeeStageMenuWidget::OnStageOneBtnClicked()

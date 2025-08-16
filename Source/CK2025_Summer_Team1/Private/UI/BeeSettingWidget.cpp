@@ -57,23 +57,11 @@ void UBeeSettingWidget::NativeConstruct()
 	 * Sound Setting
 	 */
 	MasterSoundVolumeSlider->OnValueChanged.AddDynamic(this, &UBeeSettingWidget::ApplyMasterSliderValue);
-	BGMSoundVolumeSlider->OnValueChanged.AddDynamic(this, &UBeeSettingWidget::ApplyBGMSliderValue);
-	SFXSoundVolumeSlider->OnValueChanged.AddDynamic(this, &UBeeSettingWidget::ApplySFXSliderValue);
 	
 	float MasterVolume = UBeeCustomGameUserSetting::GetCustomGameUserSettings()->GetMasterSoundVolume();
 	MasterVolume = FMath::Clamp(MasterVolume, 0.f, 1.f);
 	MasterSoundVolumeSlider->SetValue(MasterVolume);
 	MasterSoundVolumeSlider->OnValueChanged.Broadcast(MasterSoundVolumeSlider->GetValue());
-
-	float BGMVolume = UBeeCustomGameUserSetting::GetCustomGameUserSettings()->GetBGMSoundVolume();
-	BGMVolume = FMath::Clamp(BGMVolume, 0.f, 1.f);
-	BGMSoundVolumeSlider->SetValue(BGMVolume);
-	BGMSoundVolumeSlider->OnValueChanged.Broadcast(BGMSoundVolumeSlider->GetValue());
-
-	float SFXVolume = UBeeCustomGameUserSetting::GetCustomGameUserSettings()->GetSFXSoundVolume();
-	SFXVolume = FMath::Clamp(SFXVolume, 0.f, 1.f);
-	SFXSoundVolumeSlider->SetValue(SFXVolume);
-	SFXSoundVolumeSlider->OnValueChanged.Broadcast(SFXSoundVolumeSlider->GetValue());
 }
 
 void UBeeSettingWidget::CloseSettingWidget()
@@ -121,17 +109,5 @@ void UBeeSettingWidget::ApplyWindowScreen()
 void UBeeSettingWidget::ApplyMasterSliderValue(const float Value)
 {
 	MasterVolumeProgressBar->SetPercent(Value);
-	UBeeCustomGameUserSetting::GetCustomGameUserSettings()->SetMasterSoundVolume(Value);
-}
-
-void UBeeSettingWidget::ApplyBGMSliderValue(const float Value)
-{
-	BGMVolumeProgressBar->SetPercent(Value);
-	UBeeCustomGameUserSetting::GetCustomGameUserSettings()->SetMasterSoundVolume(Value);
-}
-
-void UBeeSettingWidget::ApplySFXSliderValue(const float Value)
-{
-	SFXVolumeProgressBar->SetPercent(Value);
 	UBeeCustomGameUserSetting::GetCustomGameUserSettings()->SetMasterSoundVolume(Value);
 }

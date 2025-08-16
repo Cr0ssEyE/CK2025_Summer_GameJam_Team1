@@ -22,6 +22,10 @@ class CK2025_SUMMER_TEAM1_API UBeeStoryWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentStoryType(int32 StageNumber);
+	
 protected:
 	UFUNCTION(BlueprintCallable)
 	void OnTextDisplayEventBtnClicked();
@@ -97,6 +101,8 @@ protected:
 	FLinearColor OtherCharacterDialogueOutlineColor;
 
 protected:
+	uint32 bIsIntroStory : 1;
+	
 	const FStringDataTable* CurrentDialogueText;
 	
 	int32 NextDialogueIndex;

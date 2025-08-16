@@ -39,12 +39,6 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void ApplyMasterSliderValue(const float Value);
 
-	UFUNCTION(BlueprintCallable)
-	void ApplyBGMSliderValue(const float Value);
-
-	UFUNCTION(BlueprintCallable)
-	void ApplySFXSliderValue(const float Value);
-
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UCanvasPanel> MainCanvasPanel;
@@ -65,19 +59,7 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
 	TObjectPtr<USlider> MasterSoundVolumeSlider;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
-	TObjectPtr<USlider> BGMSoundVolumeSlider;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
-	TObjectPtr<USlider> SFXSoundVolumeSlider;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
-	TObjectPtr<UProgressBar> MasterVolumeProgressBar;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
-	TObjectPtr<UProgressBar> BGMVolumeProgressBar;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
-	TObjectPtr<UProgressBar> SFXVolumeProgressBar;
+	TObjectPtr<UProgressBar> MasterVolumeProgressBar;
 };

@@ -13,8 +13,21 @@
 void UBeeStoryWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	
+	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->FadeWidgetFadeOutCompleteEvent.AddDynamic(this, &UBeeStoryWidget::OnFadeOutComplete);
+	SkipBtn->OnClicked.AddDynamic(this, &UBeeStoryWidget::OnSkipButtonClicked);
+	ExitCheckWidget->GetConfirmButtonClickedEvent().AddDynamic(this, &UBeeStoryWidget::OnSkipButtonConfirmed);
+	ExitCheckWidget->GetCancelButtonClickedEvent().AddDynamic(this, &UBeeStoryWidget::OnSkipButtonCanceled);
+	TextDisplayEventBtn->OnClicked.AddDynamic(this, &UBeeStoryWidget::OnTextDisplayEventBtnClicked);
 
-	const int32 CurrentStageNumber = GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->GetCurrentPlayingStageNumber();
+	ClickHintImage->SetVisibility(ESlateVisibility::Hidden);
+	bIsIntroStory = false;
+}
+
+void UBeeStoryWidget::SetCurrentStoryType(int32 StageNumber)
+{
+	bIsIntroStory = UGameplayStatics::GetCurrentLevelName(GetWorld()) == LEVEL_NAME_LOBBY;
+	const int32 CurrentStageNumber = StageNumber;
 	
 	TArray<FStringDataTable*> LoadedStringDataArray;
 	DialogueTextDataTable->GetAllRows<FStringDataTable>(TEXT("Failed To Load Reward Data Tables"), LoadedStringDataArray);
@@ -25,17 +38,16 @@ void UBeeStoryWidget::NativeConstruct()
 		{
 			continue;
 		}
+
+		if (LoadedStringData->IsClearStory && bIsIntroStory)
+		{
+			return;
+		}
 		
 		DialogueTextData.Add(LoadedStringData);
 	}
-	
-	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->FadeWidgetFadeOutCompleteEvent.AddDynamic(this, &UBeeStoryWidget::OnFadeOutComplete);
-	SkipBtn->OnClicked.AddDynamic(this, &UBeeStoryWidget::OnSkipButtonClicked);
-	ExitCheckWidget->GetConfirmButtonClickedEvent().AddDynamic(this, &UBeeStoryWidget::OnSkipButtonConfirmed);
-	ExitCheckWidget->GetCancelButtonClickedEvent().AddDynamic(this, &UBeeStoryWidget::OnSkipButtonCanceled);
-	TextDisplayEventBtn->OnClicked.AddDynamic(this, &UBeeStoryWidget::OnTextDisplayEventBtnClicked);
 
-	ClickHintImage->SetVisibility(ESlateVisibility::Hidden);
+	SetNextSpeaker();
 }
 
 void UBeeStoryWidget::OnTextDisplayEventBtnClicked()
@@ -54,7 +66,10 @@ void UBeeStoryWidget::OnTextDisplayEventBtnClicked()
 void UBeeStoryWidget::OnFadeOutComplete()
 {
 	GetWorld()->GetTimerManager().ClearTimer(DialogueTextDisplayingHandle);
-	UGameplayStatics::OpenLevel(GetWorld(), LEVEL_NAME_LOBBY);
+	if (UGameplayStatics::GetCurrentLevelName(GetWorld()) == LEVEL_NAME_LOBBY)
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), LEVEL_NAME_LOBBY);
+	}
 }
 
 void UBeeStoryWidget::OnSkipButtonClicked()
@@ -95,7 +110,7 @@ void UBeeStoryWidget::SetNextSpeaker()
 	CurrentWordsIndex = 0;
 	
 	//TODO: 화자에 따라 캐랙터 배경 및 색상 변경
-	if (CurrentDialogueText->)
+	if (CurrentDialogueText->IsPlayer)
 	{
 		CharacterDialogueBackgroundImage->SetColorAndOpacity(PlayerCharacterDialogueOutlineColor);
 		PlayerCharacterImage->SetColorAndOpacity(FLinearColor::White);

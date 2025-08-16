@@ -19,8 +19,6 @@ class CK2025_SUMMER_TEAM1_API UBeePuzzleStageWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
-public:
-
 protected:
 	UFUNCTION(BlueprintCallable)
 	void OpenSubMenu();
@@ -30,6 +28,10 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	void UndoLastAction();
+
+protected:
+	UFUNCTION(BlueprintCallable)
+	void OnColorMixed();
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
