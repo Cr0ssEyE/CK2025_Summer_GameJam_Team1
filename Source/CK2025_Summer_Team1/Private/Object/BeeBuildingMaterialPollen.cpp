@@ -3,7 +3,6 @@
 
 #include "Object/BeeBuildingMaterialPollen.h"
 
-#include "K2Node_GetSubsystem.h"
 #include "Constant/BeeCollisionNames.h"
 #include "Game/BeePuzzleManageSubsystem.h"
 #include "Object/BeeBuildingMaterialBeeswax.h"
@@ -66,10 +65,21 @@ void ABeeBuildingMaterialPollen::NotifyActorOnReleased(FKey ButtonReleased)
 void ABeeBuildingMaterialPollen::TryMixingColor(ABeeBuildingMaterialBase* OtherBuildingMaterial)
 {
 	EBuildingMaterialBaseColor MixedColor = EBuildingMaterialBaseColor::None;
-	bool IsCanMixingColor = FBeeColorEnumHelper::FindMixedColor(BuildingMaterialColor, OtherBuildingMaterial->GetBuildingMaterialColor(), MixedColor);
+	bool IsCanMixingColor = FBeeColorEnumHelper::FindMixedColor(BuildingMaterialColorEnum, OtherBuildingMaterial->GetBuildingMaterialColorEnum(), MixedColor);
 	if (IsCanMixingColor)
 	{
-		GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>()->ChangeBuildingMaterialColor(OtherBuildingMaterial, MixedColor);
+		FBeeBuildingMaterialEventInfo EventInfo;
+		EventInfo.EffectedBuildingMaterial = OtherBuildingMaterial;
+		EventInfo.RemovedBuildingMaterial = this;
+		EventInfo.EffectedMaterialBeforeColorEnum = OtherBuildingMaterial->GetBuildingMaterialColorEnum();
+		EventInfo.EffectedMaterialBeforeColor = OtherBuildingMaterial->GetBuildingMaterialColor();
+		EventInfo.EffectedMaterialLastPlacedPoint = OtherBuildingMaterial->GetLastPlacedPoint();
+		EventInfo.RemovedMaterialLastPlacedPoint = GetLastPlacedPoint();
+		
+		UBeePuzzleManageSubsystem* Subsystem = GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>();
+		Subsystem->RegisterBuildingMaterialEventInfo(EventInfo);
+		
+		Subsystem->ChangeBuildingMaterialColor(OtherBuildingMaterial, MixedColor);
 		if (auto Beeswax = Cast<ABeeBuildingMaterialBeeswax>(OtherBuildingMaterial))
 		{
 			if (Beeswax->IsOnPuzzlePlace())

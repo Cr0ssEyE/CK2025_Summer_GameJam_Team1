@@ -20,8 +20,10 @@ void ABeeBuildingMaterialsGenerator::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>()->OnFadeStateChanged.AddDynamic(this, &ABeeBuildingMaterialsGenerator::OnFadeStateChanged);
-
+	UBeePuzzleManageSubsystem* PuzzleManageSubsystem = GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>();
+	PuzzleManageSubsystem->OnFadeStateChanged.AddDynamic(this, &ABeeBuildingMaterialsGenerator::OnFadeStateChanged);
+	PuzzleManageSubsystem->RegisterBeeswaxGenerator(this);
+	
 	TArray<UActorComponent*> PieceComponents = K2_GetComponentsByClass(UBeePuzzlePieceSpawnPoint::StaticClass());
 	for (UActorComponent* Component : PieceComponents)
 	{
@@ -39,7 +41,9 @@ void ABeeBuildingMaterialsGenerator::BeginPlay()
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateWeakLambda(this, [&, this]()
 	{
-		GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>()->OnFadeStateChanged.Broadcast(true);
+		UBeePuzzleManageSubsystem* NewPuzzleManageSubsystem = GetGameInstance()->GetSubsystem<UBeePuzzleManageSubsystem>();
+		NewPuzzleManageSubsystem->OnFadeStateChanged.Broadcast(true);
+		NewPuzzleManageSubsystem->SetPollenCount();
 	}), 5.f, false);
 }
 
@@ -49,23 +53,24 @@ void ABeeBuildingMaterialsGenerator::OnFadeStateChanged(bool bIsFadingIn)
 	{
 		return;
 	}
-	
+
+	TArray<UBeePuzzlePieceSpawnPoint*> InstancePuzzlePieceSpawnPoints = PuzzlePieceSpawnPoints;
 	for (auto PuzzlePieceData : StageInfoDataAsset->PuzzlePieceDataArray)
 	{
 		for (int32 i = 0; i < PuzzlePieceData.PuzzlePieceCount; ++i)
 		{
-			if (PuzzlePieceSpawnPoints.IsEmpty())
+			if (InstancePuzzlePieceSpawnPoints.IsEmpty())
 			{
 				break;
 			}
 
-			int32 RandomIndex = FMath::RandRange(0, PuzzlePieceSpawnPoints.Num() - 1 <= 0 ? 1 : PuzzlePieceSpawnPoints.Num() - 1);
-			RandomIndex = RandomIndex >= PuzzlePieceSpawnPoints.Num() ? PuzzlePieceSpawnPoints.Num() - 1 : RandomIndex;
-			UBeePuzzlePieceSpawnPoint* SpawnPoint = PuzzlePieceSpawnPoints[RandomIndex];
+			int32 RandomIndex = FMath::RandRange(0, InstancePuzzlePieceSpawnPoints.Num() - 1 <= 0 ? 1 : InstancePuzzlePieceSpawnPoints.Num() - 1);
+			RandomIndex = RandomIndex >= InstancePuzzlePieceSpawnPoints.Num() ? InstancePuzzlePieceSpawnPoints.Num() - 1 : RandomIndex;
+			UBeePuzzlePieceSpawnPoint* SpawnPoint = InstancePuzzlePieceSpawnPoints[RandomIndex];
 			if (SpawnPoint)
 			{
 				GetWorld()->SpawnActor<AActor>(PuzzlePieceData.PuzzlePieceBlueprint, SpawnPoint->GetComponentLocation(), FRotator::ZeroRotator);
-				PuzzlePieceSpawnPoints.Remove(SpawnPoint);
+				InstancePuzzlePieceSpawnPoints.Remove(SpawnPoint);
 			}
 			else
 			{

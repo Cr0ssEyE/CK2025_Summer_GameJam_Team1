@@ -17,7 +17,7 @@ ABeePlayerPawn::ABeePlayerPawn()
 
 	// create the root
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-
+	
 	// create the camera
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
@@ -28,6 +28,8 @@ ABeePlayerPawn::ABeePlayerPawn()
 		CameraArm->TargetArmLength = PlayerDataAsset->PlayerCameraDistance;
 		CameraArm->TargetOffset = FVector(0.f, 0.f, PlayerDataAsset->PlayerCameraDistance);
 		Camera->SetRelativeRotation(PlayerDataAsset->PlayerCameraRotation);
+		Camera->SetProjectionMode(ECameraProjectionMode::Orthographic);
+		Camera->SetOrthoWidth(1000.f);
 	}
 	else
 	{

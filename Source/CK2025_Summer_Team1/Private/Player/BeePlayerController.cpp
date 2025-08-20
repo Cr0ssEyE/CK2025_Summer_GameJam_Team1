@@ -8,6 +8,7 @@
 #include "Constant/BeeAssetLocations.h"
 #include "Constant/BeeCollisionNames.h"
 #include "Data/BeePlayerDataAsset.h"
+#include "Game/BeeGameInstance.h"
 #include "Object/BeeBuildingMaterialBase.h"
 #include "Util/BeeConstructorHelper.h"
 
@@ -27,13 +28,19 @@ ABeePlayerController::ABeePlayerController()
 		ObjectSnapRange = PlayerDataAsset->ObjectSnapRange;
 	}
 
+	FadeManageWidgetClass = FBeeConstructorHelper::FindAndGetClass<UBeeFadeManageWidget>(LOCATION_FADE_WIDGET);
+	
 	bIsObjectPickup = false;
 }
 
 void ABeePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	FadeManageWidget = CreateWidget<UBeeFadeManageWidget>(GetWorld(), FadeManageWidgetClass);
+	FadeManageWidget->AddToViewport(999);
+	FadeManageWidget->BeginFadeIn();
 	
+	GetWorld()->GetGameInstanceChecked<UBeeGameInstance>()->OnPlayerSpawn(*FadeManageWidget);
 }
 
 void ABeePlayerController::SetupInputComponent()

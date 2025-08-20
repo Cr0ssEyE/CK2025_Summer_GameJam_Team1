@@ -5,3 +5,4 @@
 #define PARAM_OUTLINE_DENSITY TEXT("OutlineDensity")
 #define PARAM_OUTLINE_VISIBILITY TEXT("OutlineVisibility")
 #define PARAM_PUZZLE_OBJECT_COLOR TEXT("PuzzleObjectColor")
+#define PARAM_PUZZLE_OBJECT_VISIBILITY TEXT("PuzzleObjectVisibility")

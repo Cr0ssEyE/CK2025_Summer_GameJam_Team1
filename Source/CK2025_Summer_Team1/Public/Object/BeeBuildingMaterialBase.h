@@ -27,9 +27,12 @@ public:
 	virtual void BeginPlay() override;
 
 public:
-	FORCEINLINE EBuildingMaterialBaseColor GetBuildingMaterialColor() const { return BuildingMaterialColor; }
+	FORCEINLINE EBuildingMaterialBaseColor GetBuildingMaterialColorEnum() const { return BuildingMaterialColorEnum; }
+	FORCEINLINE FColor GetBuildingMaterialColor() const { return BuildingMaterialColor; }
+
+	FORCEINLINE FVector GetLastPlacedPoint() const { return LastPlacedPoint; }
 	FORCEINLINE void SetLastPlacedPoint() { LastPlacedPoint = GetActorLocation(); }
-	void SetBuildingMaterialColor(const EBuildingMaterialBaseColor NewColorEnum, FColor NewColor);
+	void SetBuildingMaterialColor(const EBuildingMaterialBaseColor NewColorEnum, FColor NewColor, bool IsGenerateObject = false);
 	
 protected:
 	virtual void NotifyActorOnClicked(FKey ButtonPressed = EKeys::LeftMouseButton) override;
@@ -40,7 +43,10 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
-	EBuildingMaterialBaseColor BuildingMaterialColor = EBuildingMaterialBaseColor::None;
+	EBuildingMaterialBaseColor BuildingMaterialColorEnum = EBuildingMaterialBaseColor::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
+	FColor BuildingMaterialColor;
 	
 	FVector SpawnedPoint;
 	FVector LastPlacedPoint;
